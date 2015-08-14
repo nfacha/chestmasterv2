@@ -7,7 +7,7 @@ mysql: #if you select mysql above
 
 
 use_uuid: false #Use UUID or Player Name?
-chest_size: 9 #MUST be a multiple of 9!
+chest_size: 45 #MUST be a multiple of 9!
 migrated: true #DO NOT CHANGE, or the plugin will crash/reset
 
 networking:
@@ -19,3 +19,4 @@ lang:
     NO_PERMISSION: "§cAccess Denied"
     INVALID_CHEST_NUMBER: "§6That chest number is invalid"
     ADM_CHEST_USAGE: "§cUse /admchest <player> <chest_number>"
+    CHEST_NAME: "§6ChestMaster"

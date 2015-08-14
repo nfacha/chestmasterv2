@@ -11,11 +11,14 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.vexgames.chestmaster.Updater;
+import net.vexgames.chestmaster.Updater.UpdateResult;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mcstats.MetricsLite;
 
 /**
  *
@@ -32,6 +35,7 @@ public class Main extends JavaPlugin {
         if (!new File(Main.plugin.getDataFolder() + "/config.yml").exists()) {
             saveResource("config.yml", false);
             log.info(Language.CONSOLE_PREFIX + "Created config file!");
+            Utils.readConfig();
         } else {
             if (!Main.plugin.getConfig().isSet("migrated")) {
                 try {
@@ -75,6 +79,30 @@ public class Main extends JavaPlugin {
                 Main.log.info(Language.CONSOLE_PREFIX + "SQLite already exists!");
             }
 
+        }
+        if (Vars.UPDATER) {
+            Updater updater = new Updater(this, 88582, this.getFile(), Updater.UpdateType.DEFAULT, false);
+            if (updater.getResult() == UpdateResult.UPDATE_AVAILABLE) {
+                Vars.UPDATE_FOUND = true;
+                log.warning(Language.CONSOLE_PREFIX + "New update available, update at: http://dev.bukkit.org/bukkit-plugins/chestmaster/");
+            } else {
+                log.info(Language.CONSOLE_PREFIX + "You are running the latest version :)");
+
+            }
+        } else {
+            log.warning(Language.CONSOLE_PREFIX + "Updater is disabled :(");
+
+        }
+        if (Vars.METRICS) {
+            try {
+                MetricsLite metrics = new MetricsLite(this);
+                metrics.start();
+                log.info(Language.CONSOLE_PREFIX+"Metrics Started");
+            } catch (IOException e) {
+                log.warning(Language.CONSOLE_PREFIX + "Error on ChestMaster stats system!");
+            }
+        } else {
+            log.warning(Language.CONSOLE_PREFIX + "Metrics are disabled :(");
         }
 
         Bukkit.getPluginManager().registerEvents(new InventoryListener(), this);

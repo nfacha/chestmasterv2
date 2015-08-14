@@ -1,6 +1,7 @@
 package com.nunofacha.chestmaster;
 
 import com.google.gson.Gson;
+import com.mysql.jdbc.log.Log;
 import static com.nunofacha.chestmaster.Language.CHAT_PREFIX;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -163,11 +164,13 @@ public class Utils {
         Language.INVALID_CHEST_NUMBER = CHAT_PREFIX +Main.plugin.getConfig().getString("lang.INVALID_CHEST_NUMBER");
         Language.NO_PERMISSION = CHAT_PREFIX +Main.plugin.getConfig().getString("lang.NO_PERMISSION");
         Language.NO_PERMISSION_CHEST_NUMBER = CHAT_PREFIX + Main.plugin.getConfig().getString("lang.NO_PERMISSION_CHEST_NUMBER");
+        Vars.CHEST_NAME = Main.plugin.getConfig().getString("lang.CHEST_NAME");
         Vars.DB_HOST = Main.plugin.getConfig().getString("mysql.hostname");
         Vars.DB_USER = Main.plugin.getConfig().getString("mysql.username");
         Vars.DB_PASS = Main.plugin.getConfig().getString("mysql.password");
         Vars.DB_NAME = Main.plugin.getConfig().getString("mysql.database");
         Vars.DB_URL = "jdbc:mysql://" + Vars.DB_HOST + ":3306/" + Vars.DB_NAME;
+        Main.log.info(Language.CONSOLE_PREFIX+"Config loaded!");
     }
 
     public static void configError(String a) {
