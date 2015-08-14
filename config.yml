@@ -1,0 +1,11 @@
+slots: 45
+autoupdate: true
+metrics: true
+chestname: '&6&lChestMaster'
+inventarios:
+  Esquilo_Azul:
+    '1': 45;28#t@2;
+    '55': 45;31#t@272;
+  jusobreira:
+    '1': 45;28#t@2;
+    '55': 45;31#t@272;

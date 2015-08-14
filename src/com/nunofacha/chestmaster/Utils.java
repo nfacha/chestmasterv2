@@ -1,9 +1,9 @@
 package com.nunofacha.chestmaster;
 
 import com.google.gson.Gson;
+import static com.nunofacha.chestmaster.Language.CHAT_PREFIX;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -41,7 +41,7 @@ public class Utils {
         } else {
             i = p.getName();
         }
-        if(i == null){
+        if (i == null) {
             return "0";
         }
         return i;
@@ -49,11 +49,11 @@ public class Utils {
 
     public static void createTables() throws SQLException {
         if (Vars.USE_SQL) {
-            PreparedStatement st = Main.getConnection().prepareStatement("CREATE TABLE `chests`(`id` int(11)NOT NULL AUTO_INCREMENT,`uuid` varchar(255)DEFAULT NULL,`number` int(11)DEFAULT'0',`inventory` varchar(5000)DEFAULT NULL,PRIMARY KEY(`id`));");
+            PreparedStatement st = Main.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS `chests`(`id` int(11)NOT NULL AUTO_INCREMENT,`uuid` varchar(255)DEFAULT NULL,`number` int(11)DEFAULT'0',`inventory` varchar(10000)DEFAULT NULL,PRIMARY KEY(`id`));");
             st.executeUpdate();
         } else {
 
-            PreparedStatement st = Main.getConnection().prepareStatement("CREATE TABLE `chests`(`id` int(11),`uuid` varchar(255)DEFAULT NULL,`number` int(11)DEFAULT'0',`inventory` varchar(5000)DEFAULT NULL,PRIMARY KEY(`id`));");
+            PreparedStatement st = Main.getConnection().prepareStatement("CREATE TABLE `chests`(`id` int(11),`uuid` varchar(255)DEFAULT NULL,`number` int(11)DEFAULT'0',`inventory` varchar(10000)DEFAULT NULL,PRIMARY KEY(`id`));");
             st.executeUpdate();
             Main.log.info("SQLite created");
 
@@ -136,6 +136,43 @@ public class Utils {
             }
         }
         return true;
+    }
+
+    public static void readConfig() {
+        if (Main.plugin.getConfig().getString("storage").equals("sqlite")) {
+            Vars.USE_SQL = false;
+        } else {
+            if (Main.plugin.getConfig().getString("storage").equals("mysql")) {
+                Vars.USE_SQL = true;
+            } else {
+                configError("Invalid Storage, must use 'sqlite' or 'mysql'");
+                return;
+            }
+        }
+        if (Main.plugin.getConfig().getInt("chest_size") % 9 == 0) {
+            Vars.CHEST_SIZE = Main.plugin.getConfig().getInt("chest_size");
+        } else {
+            configError("chest_size must be divisible by 9!");
+            return;
+        }
+        Vars.METRICS = Main.plugin.getConfig().getBoolean("networking.use_metrics");
+        Vars.UPDATER = Main.plugin.getConfig().getBoolean("networking.use_autoupdate");
+        Vars.USE_UUID = Main.plugin.getConfig().getBoolean("use_uuid");
+        //Load Language Files
+        Language.ADM_CHEST_USAGE = CHAT_PREFIX +Main.plugin.getConfig().getString("lang.ADM_CHEST_USAGE");
+        Language.INVALID_CHEST_NUMBER = CHAT_PREFIX +Main.plugin.getConfig().getString("lang.INVALID_CHEST_NUMBER");
+        Language.NO_PERMISSION = CHAT_PREFIX +Main.plugin.getConfig().getString("lang.NO_PERMISSION");
+        Language.NO_PERMISSION_CHEST_NUMBER = CHAT_PREFIX + Main.plugin.getConfig().getString("lang.NO_PERMISSION_CHEST_NUMBER");
+        Vars.DB_HOST = Main.plugin.getConfig().getString("mysql.hostname");
+        Vars.DB_USER = Main.plugin.getConfig().getString("mysql.username");
+        Vars.DB_PASS = Main.plugin.getConfig().getString("mysql.password");
+        Vars.DB_NAME = Main.plugin.getConfig().getString("mysql.database");
+        Vars.DB_URL = "jdbc:mysql://" + Vars.DB_HOST + ":3306/" + Vars.DB_NAME;
+    }
+
+    public static void configError(String a) {
+        Main.plugin.log.severe(Language.CONSOLE_PREFIX+"CONFIG ERROR, STOPING SERVER: " + a);
+        Main.plugin.getServer().shutdown();
     }
 
 }

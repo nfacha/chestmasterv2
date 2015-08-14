@@ -20,9 +20,9 @@ import org.bukkit.inventory.Inventory;
  * @author facha
  */
 public class AdmChestCommand {
-    
+
     public static void adminOpenChest(Player p, String target, int number) throws Exception {
-        if (!p.hasPermission("chestmaster.admin")) {
+        if (!p.hasPermission("chestmaster.admchest")) {
             p.sendMessage(Language.NO_PERMISSION);
             return;
         }
@@ -36,7 +36,7 @@ public class AdmChestCommand {
         st.setString(1, targetIdentifier);
         st.setInt(2, number);
         ResultSet rs = st.executeQuery();
-        
+
         if (rs.next()) {
             String Data = rs.getString("inventory");
             Inventory iv = Utils.unserializeInventory(Data);
@@ -47,5 +47,5 @@ public class AdmChestCommand {
             p.sendMessage(Language.INVALID_CHEST_NUMBER);
         }
     }
-    
+
 }

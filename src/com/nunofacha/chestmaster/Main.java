@@ -29,48 +29,89 @@ public class Main extends JavaPlugin {
 
     public void onEnable() {
         plugin = this;
-        log.info(Language.CONSOLE_PREFIX+"Starting ChestMaster");
-        if (Vars.USE_SQL) {
-            log.info(Language.CONSOLE_PREFIX+"Using MySQL, connecting now!");
-        } else {
-            log.info(Language.CONSOLE_PREFIX+"Using SQLite!");
+        if (!new File(Main.plugin.getDataFolder() + "/config.yml").exists()) {
             saveResource("config.yml", false);
+            log.info(Language.CONSOLE_PREFIX + "Created config file!");
+        } else {
+            if (!Main.plugin.getConfig().isSet("migrated")) {
+                try {
+                    NewVersionConverter.convert();
+                    log.info(Language.CHAT_PREFIX + "Your old config file was renamed to config_old.yml, a new one will be created and loaded");
+                    File oldConfig = new File(Main.plugin.getDataFolder() + "/config.yml");
+                    oldConfig.renameTo(new File(Main.plugin.getDataFolder() + "/config_old.yml"));
+                    saveResource("config.yml", false);
+                    Utils.readConfig();
+                } catch (Exception ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
+            } else {
+                log.info(Language.CONSOLE_PREFIX + "Config file detected, reading config now!");
+                Utils.readConfig();
+            }
         }
-        boolean e = registerSQLitekeepAlive();
-        if (!e) {
+        log.info(Language.CONSOLE_PREFIX + "Starting ChestMaster");
+        if (Vars.USE_SQL) {
+            log.info(Language.CONSOLE_PREFIX + "Using MySQL!");
             try {
+                Connection c = DriverManager.getConnection(Vars.DB_URL, Vars.DB_USER, Vars.DB_PASS);
+                Main.conn = c;
                 Utils.createTables();
             } catch (SQLException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
+            registerMySQLKeepAlive();
+
         } else {
-            Main.log.info(Language.CONSOLE_PREFIX+"SQLite already exists!");
+            log.info(Language.CONSOLE_PREFIX + "Using SQLite!");
+            boolean e = registerSQLitekeepAlive();
+            if (!e) {
+                try {
+                    Utils.createTables();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                Main.log.info(Language.CONSOLE_PREFIX + "SQLite already exists!");
+            }
+
         }
 
         Bukkit.getPluginManager().registerEvents(new InventoryListener(), this);
     }
 
-    public static Connection getConnection() {
+    public static Connection getConnection() throws SQLException {
         Connection c = null;
         if (!Vars.USE_SQL) {
             return Main.conn;
+        } else {
+            Connection conn = DriverManager.getConnection(Vars.DB_URL, Vars.DB_USER, Vars.DB_PASS);
+            return conn;
         }
 
-        return c;
+        //return c;
     }
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (command.getName().equalsIgnoreCase("chest")) {
             Player p = (Player) sender;
             int n = 1;
+
             try {
                 if (args.length >= 1) {
                     n = Integer.valueOf(args[0]);
                 }
-                if (!p.hasPermission("chestmaster.chest." + n)) {
-                    p.sendMessage(Language.NO_PERMISSION_CHEST_NUMBER);
-                    return false;
+                if (n != 1) {
+                    if (!p.hasPermission("chestmaster.multiple." + n)) {
+                        p.sendMessage(Language.NO_PERMISSION_CHEST_NUMBER);
+                        return false;
+                    }
+                } else {
+                    if (!p.hasPermission("chestmaster.open")) {
+                        p.sendMessage(Language.NO_PERMISSION);
+                        return false;
+
+                    }
                 }
                 ChestCommand.openChest(p, n);
             } catch (SQLException ex) {
@@ -102,6 +143,22 @@ public class Main extends JavaPlugin {
         }
 
         return false;
+    }
+
+    public static void registerMySQLKeepAlive() {
+        Bukkit.getScheduler().scheduleAsyncRepeatingTask(Main.plugin, new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    PreparedStatement st = Main.getConnection().prepareStatement("SELECT 1");
+                    st.executeQuery();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+        }, 300, 300);
     }
 
     public static boolean registerSQLitekeepAlive() {

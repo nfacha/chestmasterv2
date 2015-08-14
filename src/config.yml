@@ -6,9 +6,13 @@ mysql: #if you select mysql above
     database: chestmaster
 
 
-
+use_uuid: false #Use UUID or Player Name?
 chest_size: 9 #MUST be a multiple of 9!
-migrated: true
+migrated: true #DO NOT CHANGE, or the plugin will crash/reset
+
+networking:
+    use_metrics: true #Enable/Disable the Metrics system, please avoid disabling this <3
+    use_autoupdate: true #I recommend to keep this active
 
 lang:
     NO_PERMISSION_CHEST_NUMBER: "§cYou cant have this many chests!"
