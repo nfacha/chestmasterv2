@@ -1,6 +1,6 @@
 name: ChestMaster
 main: com.nunofacha.chestmaster.Main
-version: 2.0
+version: 2.1
 commands:
   chest:
     description: xxx

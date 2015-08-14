@@ -1,7 +1,5 @@
 package com.nunofacha.chestmaster;
 
-import com.google.gson.Gson;
-import com.mysql.jdbc.log.Log;
 import static com.nunofacha.chestmaster.Language.CHAT_PREFIX;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -22,8 +20,6 @@ import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
  * @author facha
  */
 public class Utils {
-
-    public static Gson g = new Gson();
 
     public static String getPlayerIdentifier(Player p) {
         String i = "";
@@ -160,9 +156,9 @@ public class Utils {
         Vars.UPDATER = Main.plugin.getConfig().getBoolean("networking.use_autoupdate");
         Vars.USE_UUID = Main.plugin.getConfig().getBoolean("use_uuid");
         //Load Language Files
-        Language.ADM_CHEST_USAGE = CHAT_PREFIX +Main.plugin.getConfig().getString("lang.ADM_CHEST_USAGE");
-        Language.INVALID_CHEST_NUMBER = CHAT_PREFIX +Main.plugin.getConfig().getString("lang.INVALID_CHEST_NUMBER");
-        Language.NO_PERMISSION = CHAT_PREFIX +Main.plugin.getConfig().getString("lang.NO_PERMISSION");
+        Language.ADM_CHEST_USAGE = CHAT_PREFIX + Main.plugin.getConfig().getString("lang.ADM_CHEST_USAGE");
+        Language.INVALID_CHEST_NUMBER = CHAT_PREFIX + Main.plugin.getConfig().getString("lang.INVALID_CHEST_NUMBER");
+        Language.NO_PERMISSION = CHAT_PREFIX + Main.plugin.getConfig().getString("lang.NO_PERMISSION");
         Language.NO_PERMISSION_CHEST_NUMBER = CHAT_PREFIX + Main.plugin.getConfig().getString("lang.NO_PERMISSION_CHEST_NUMBER");
         Vars.CHEST_NAME = Main.plugin.getConfig().getString("lang.CHEST_NAME");
         Vars.DB_HOST = Main.plugin.getConfig().getString("mysql.hostname");
@@ -170,11 +166,11 @@ public class Utils {
         Vars.DB_PASS = Main.plugin.getConfig().getString("mysql.password");
         Vars.DB_NAME = Main.plugin.getConfig().getString("mysql.database");
         Vars.DB_URL = "jdbc:mysql://" + Vars.DB_HOST + ":3306/" + Vars.DB_NAME;
-        Main.log.info(Language.CONSOLE_PREFIX+"Config loaded!");
+        Main.log.info(Language.CONSOLE_PREFIX + "Config loaded!");
     }
 
     public static void configError(String a) {
-        Main.plugin.log.severe(Language.CONSOLE_PREFIX+"CONFIG ERROR, STOPING SERVER: " + a);
+        Main.plugin.log.severe(Language.CONSOLE_PREFIX + "CONFIG ERROR, STOPING SERVER: " + a);
         Main.plugin.getServer().shutdown();
     }
 
