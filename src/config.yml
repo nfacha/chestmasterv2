@@ -1,0 +1,17 @@
+storage: sqlite #sqlite or mysql
+mysql: #if you select mysql above
+    hostname: localhost
+    username: root
+    password: bananas
+    database: chestmaster
+
+
+
+chest_size: 9 #MUST be a multiple of 9!
+migrated: true
+
+lang:
+    NO_PERMISSION_CHEST_NUMBER: "§cYou cant have this many chests!"
+    NO_PERMISSION: "§cAccess Denied"
+    INVALID_CHEST_NUMBER: "§6That chest number is invalid"
+    ADM_CHEST_USAGE: "§cUse /admchest <player> <chest_number>"
