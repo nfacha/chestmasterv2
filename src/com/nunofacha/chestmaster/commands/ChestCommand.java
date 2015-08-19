@@ -26,13 +26,10 @@ public class ChestCommand {
         if (rs.next()) {
             String Data = rs.getString("inventory");
             Inventory iv = Utils.unserializeInventory(Data);
-            p.openInventory(iv);
+            Inventory to_open = Bukkit.createInventory(null, Vars.CHEST_SIZE, Vars.CHEST_NAME);
+            to_open.setContents(iv.getContents());
+            p.openInventory(to_open);
         } else {
-//            PreparedStatement st2 = Main.getConnection().prepareStatement("INSERT INTO `chests` (`id`, `uuid`, `number`, `inventory`) VALUES (null, ?, ?, ?);");
-//            st2.setString(1, Utils.getPlayerIdentifier(p));
-//            st2.setInt(2, number);
-//            st2.setString(3, "{}");
-//            st2.executeUpdate();
             Inventory iv = Bukkit.createInventory(null, Vars.CHEST_SIZE, Vars.CHEST_NAME);
             p.openInventory(iv);
         }
