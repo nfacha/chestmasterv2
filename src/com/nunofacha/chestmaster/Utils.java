@@ -78,7 +78,7 @@ public class Utils {
     }
 
     public static Inventory unserializeInventory(String data) throws IOException {
-        Inventory v = Bukkit.createInventory(null, 9);
+        Inventory v = Bukkit.createInventory(null, Vars.CHEST_SIZE);
         String[] dataArray = data.split("@");
         for (String s : dataArray) {
             s.replace("@", "");
@@ -86,6 +86,7 @@ public class Utils {
             if (i != null) {
                 v.addItem(i);
             }
+
         }
 
         return v;
