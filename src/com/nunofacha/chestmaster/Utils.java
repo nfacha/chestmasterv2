@@ -153,6 +153,10 @@ public class Utils {
             configError("chest_size must be divisible by 9!");
             return;
         }
+        if(Main.plugin.getConfig().getInt("chest_size") > 54){
+            configError("chest_size cant be more than 54");
+            return;
+        }
         Vars.METRICS = Main.plugin.getConfig().getBoolean("networking.use_metrics");
         Vars.UPDATER = Main.plugin.getConfig().getBoolean("networking.use_autoupdate");
         Vars.USE_UUID = Main.plugin.getConfig().getBoolean("use_uuid");
