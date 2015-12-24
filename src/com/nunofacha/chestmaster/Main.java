@@ -80,6 +80,11 @@ public class Main extends JavaPlugin {
             }
 
         }
+        try {
+            Utils.checkSQLVersion();
+        } catch (SQLException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
         if (Vars.UPDATER) {
             Updater updater = new Updater(this, 88582, this.getFile(), Updater.UpdateType.DEFAULT, false);
             if (updater.getResult() == UpdateResult.UPDATE_AVAILABLE) {

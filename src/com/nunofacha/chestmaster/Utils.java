@@ -153,7 +153,7 @@ public class Utils {
             configError("chest_size must be divisible by 9!");
             return;
         }
-        if(Main.plugin.getConfig().getInt("chest_size") > 54){
+        if (Main.plugin.getConfig().getInt("chest_size") > 54) {
             configError("chest_size cant be more than 54");
             return;
         }
@@ -177,6 +177,43 @@ public class Utils {
     public static void configError(String a) {
         Main.plugin.log.severe(Language.CONSOLE_PREFIX + "CONFIG ERROR, STOPING SERVER: " + a);
         Main.plugin.getServer().shutdown();
+    }
+
+    public static void checkSQLVersion() throws SQLException {
+        final int required_version = 2;
+        if (!Main.plugin.getConfig().isSet("sql_version")) {
+            Main.plugin.getConfig().set("sql_version", 1);
+            Main.plugin.saveConfig();
+        }
+        int current = Main.plugin.getConfig().getInt("sql_version");
+        if (current != required_version) {
+            Main.log.info(Language.CONSOLE_PREFIX + "Config version outdated, executing update to fix it!");
+            if (current == 1) {
+                Main.log.info(Language.CONSOLE_PREFIX + "ISSUE FOUND: inventory MYSQL Column size: https://bitbucket.org/facha/chestmaster-v2.0/issues/1/data-storage-and-permissions-problem");
+                if (Vars.USE_SQL) {
+                    Main.log.info(Language.CONSOLE_PREFIX + "You are using SQL, so its easy to fix, I LOVE YOU <3");
+                    PreparedStatement st = Main.getConnection().prepareStatement("ALTER TABLE chests CHANGE inventory inventory VARCHAR( 65000 )");
+                    st.executeUpdate();
+                    Main.log.info(Language.CONSOLE_PREFIX + "Your database should be fixed now!");
+                } else {
+                    Main.log.info(Language.CONSOLE_PREFIX + "You are using SQLite, realy? You want to make my life worst... I need to dump your all database into a new table -.-");
+                    PreparedStatement st = Main.getConnection().prepareStatement("ALTER TABLE chests RENAME TO chests_old;");
+                    st.executeUpdate();
+                    st = Main.getConnection().prepareStatement("CREATE TABLE `chests`(`id` int(11),`uuid` varchar(255)DEFAULT NULL,`number` int(11)DEFAULT'0',`inventory` varchar(65000)DEFAULT NULL,PRIMARY KEY(`id`))");
+                    st.executeUpdate();
+                    st = Main.getConnection().prepareStatement("INSERT INTO chests (id, uuid, number, inventory) SELECT id, uuid, number, inventory FROM chests_old; COMMIT;");
+                    st.executeUpdate();
+                    Main.log.info(Language.CONSOLE_PREFIX + "Your database should be fixed now damm SQLite!");
+                }
+                Main.log.info(Language.CONSOLE_PREFIX + "ISSUE FIXED: https://bitbucket.org/facha/chestmaster-v2.0/issues/1/data-storage-and-permissions-problem");
+                Main.plugin.getConfig().set("sql_version", 2);
+                Main.plugin.saveConfig();
+            }
+        } else {
+            Main.log.info(Language.CONSOLE_PREFIX + "No SQL dataformat issues found! :D");
+
+        }
+
     }
 
 }

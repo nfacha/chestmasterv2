@@ -1,6 +1,6 @@
 name: ChestMaster
 main: com.nunofacha.chestmaster.Main
-version: 2.5
+version: 2.6
 commands:
   chest:
     description: Opens a virtual chest
