@@ -134,6 +134,10 @@ public class Main extends JavaPlugin {
                 if (args.length >= 1) {
                     n = Integer.valueOf(args[0]);
                 }
+                if(n < 0){
+                    p.sendMessage(Language.INVALID_CHEST_NUMBER);
+                    return false;
+                }
                 if (n != 1) {
                     if (!p.hasPermission("chestmaster.multiple." + n)) {
                         p.sendMessage(Language.NO_PERMISSION_CHEST_NUMBER);
