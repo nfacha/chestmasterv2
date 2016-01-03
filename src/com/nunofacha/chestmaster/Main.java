@@ -126,6 +126,15 @@ public class Main extends JavaPlugin {
     }
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (command.getName().equalsIgnoreCase("chestreload")) {
+            if(!sender.hasPermission("chestmaster.reload")){
+                sender.sendMessage(Language.NO_PERMISSION);
+                return false;
+            }else{
+                Utils.readConfig();
+                sender.sendMessage("§6Config reloaded");
+            }
+        }
         if (command.getName().equalsIgnoreCase("chest")) {
             Player p = (Player) sender;
             int n = 1;

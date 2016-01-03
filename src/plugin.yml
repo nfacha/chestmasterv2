@@ -6,3 +6,5 @@ commands:
     description: Opens a virtual chest
   admchest:
     description: Opens a player virtual chest
+  chestreload:
+    description: Reload ChestMaster
