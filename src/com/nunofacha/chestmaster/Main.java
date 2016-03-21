@@ -3,6 +3,7 @@ package com.nunofacha.chestmaster;
 import com.nunofacha.chestmaster.commands.AdmChestCommand;
 import com.nunofacha.chestmaster.commands.ChestCommand;
 import com.nunofacha.chestmaster.listeners.InventoryListener;
+import com.nunofacha.chestmaster.listeners.MoveListener;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
@@ -111,6 +112,7 @@ public class Main extends JavaPlugin {
         }
 
         Bukkit.getPluginManager().registerEvents(new InventoryListener(), this);
+        Bukkit.getPluginManager().registerEvents(new MoveListener(), this);
     }
 
     public static Connection getConnection() throws SQLException {

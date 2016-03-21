@@ -1,12 +1,16 @@
 package com.nunofacha.chestmaster;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import org.bukkit.entity.Player;
 
 /**
  *
  * @author facha
  */
 public class Vars {
+
     //This will be loaded from config
     public static boolean USE_SQL = false;
     public static boolean USE_UUID = false;
@@ -24,4 +28,6 @@ public class Vars {
     public static String DB_HOST = "";
     public static String DB_NAME = "";
     public static boolean UPDATE_FOUND = false;
+    public static List<Player> activeChest = new ArrayList<Player>();
+
 }

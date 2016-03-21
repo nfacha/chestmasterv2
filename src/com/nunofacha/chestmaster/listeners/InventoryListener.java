@@ -11,9 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
-
 public class InventoryListener implements Listener {
-
     @EventHandler
     public void onClose(InventoryCloseEvent e) throws SQLException {
         if (e.getPlayer() instanceof Player) {
@@ -70,6 +68,9 @@ public class InventoryListener implements Listener {
                 }
                 Vars.open_chests_adm.remove(p.getName());
                 Vars.open_chests_adm_owner.remove(p.getName());
+            }
+            if(Vars.activeChest.contains(p)){
+                Vars.activeChest.remove(p);
             }
         }
     }
