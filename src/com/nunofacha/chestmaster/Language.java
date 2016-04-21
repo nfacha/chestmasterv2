@@ -17,5 +17,6 @@ public class Language {
     public static String NO_PERMISSION = CHAT_PREFIX + Main.plugin.getConfig().getString("lang.NO_PERMISSION");
     public static String INVALID_CHEST_NUMBER = CHAT_PREFIX + Main.plugin.getConfig().getString("lang.INVALID_CHEST_NUMBER");
     public static String ADM_CHEST_USAGE = CHAT_PREFIX + Main.plugin.getConfig().getString("lang.ADM_CHEST_USAGE");
+    public static String NO_PERMISSION_CREATIVE = CHAT_PREFIX + Main.plugin.getConfig().getString("lang.NO_PERMISSION_CREATIVE");
 
 }

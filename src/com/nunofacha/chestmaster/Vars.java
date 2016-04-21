@@ -29,5 +29,8 @@ public class Vars {
     public static String DB_NAME = "";
     public static boolean UPDATE_FOUND = false;
     public static List<Player> activeChest = new ArrayList<Player>();
+    public static boolean ADVANCED_METRICS = true;
+    public static boolean DISABLE_DUPE_KICK = false;
+    public static boolean BLOCK_CREATIVE_ACCESS = false;
 
 }

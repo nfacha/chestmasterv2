@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -19,6 +20,10 @@ import org.bukkit.inventory.Inventory;
 public class ChestCommand {
 
     public static void openChest(Player p, int number) throws SQLException, IOException {
+        if (Vars.BLOCK_CREATIVE_ACCESS && p.getGameMode() == GameMode.CREATIVE) {
+            p.sendMessage(Language.NO_PERMISSION_CREATIVE);
+            return;
+        }
         if (Vars.activeChest.contains(p)) {
             p.sendMessage(Language.NO_PERMISSION);
             return;

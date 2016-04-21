@@ -160,11 +160,16 @@ public class Utils {
         Vars.METRICS = Main.plugin.getConfig().getBoolean("networking.use_metrics");
         Vars.UPDATER = Main.plugin.getConfig().getBoolean("networking.use_autoupdate");
         Vars.USE_UUID = Main.plugin.getConfig().getBoolean("use_uuid");
+        Vars.DISABLE_DUPE_KICK = Main.plugin.getConfig().getBoolean("disable_dupe_kick");
+        Vars.ADVANCED_METRICS = Main.plugin.getConfig().getBoolean("networking.use_advanced_metrics");
+        Vars.BLOCK_CREATIVE_ACCESS = Main.plugin.getConfig().getBoolean("block_creative_access");
         //Load Language Files
         Language.ADM_CHEST_USAGE = CHAT_PREFIX + Main.plugin.getConfig().getString("lang.ADM_CHEST_USAGE");
         Language.INVALID_CHEST_NUMBER = CHAT_PREFIX + Main.plugin.getConfig().getString("lang.INVALID_CHEST_NUMBER");
         Language.NO_PERMISSION = CHAT_PREFIX + Main.plugin.getConfig().getString("lang.NO_PERMISSION");
         Language.NO_PERMISSION_CHEST_NUMBER = CHAT_PREFIX + Main.plugin.getConfig().getString("lang.NO_PERMISSION_CHEST_NUMBER");
+        Language.NO_PERMISSION_CREATIVE = CHAT_PREFIX + Main.plugin.getConfig().getString("lang.NO_PERMISSION_CREATIVE");
+
         Vars.CHEST_NAME = Main.plugin.getConfig().getString("lang.CHEST_NAME");
         Vars.DB_HOST = Main.plugin.getConfig().getString("mysql.hostname");
         Vars.DB_USER = Main.plugin.getConfig().getString("mysql.username");

@@ -51,6 +51,26 @@ public class Main extends JavaPlugin {
                 }
 
             } else {
+                if (Main.plugin.getConfig().isSet("disable_dupe_kick")) {
+                    Main.plugin.getConfig().set("disable_dupe_kick", false);
+                    saveConfig();
+                    log.config(Language.CONSOLE_PREFIX + "Added disable_dupe_kick key to config file as FALSE");
+                }
+                if (Main.plugin.getConfig().isSet("networking.use_advanced_metrics")) {
+                    Main.plugin.getConfig().set("networking.use_advanced_metrics", true);
+                    saveConfig();
+                    log.config(Language.CONSOLE_PREFIX + "Added networking.use_advanced_metrics key to config file as TRUE");
+                }
+                if (Main.plugin.getConfig().isSet("block_creative_access")) {
+                    Main.plugin.getConfig().set("block_creative_access", false);
+                    saveConfig();
+                    log.config(Language.CONSOLE_PREFIX + "Added block_creative_access key to config file as false");
+                }
+                if (Main.plugin.getConfig().isSet("lang.NO_PERMISSION_CREATIVE")) {
+                    Main.plugin.getConfig().set("lang.NO_PERMISSION_CREATIVE", "You cant use /chest while in creative gamemode");
+                    saveConfig();
+                    log.config(Language.CONSOLE_PREFIX + "Added lang.NO_PERMISSION_CREATIVE language string to config file as You cant use /chest while in creative gamemode");
+                }
                 log.info(Language.CONSOLE_PREFIX + "Config file detected, reading config now!");
                 Utils.readConfig();
             }
@@ -103,7 +123,7 @@ public class Main extends JavaPlugin {
             try {
                 MetricsLite metrics = new MetricsLite(this);
                 metrics.start();
-                log.info(Language.CONSOLE_PREFIX+"Metrics Started");
+                log.info(Language.CONSOLE_PREFIX + "Metrics Started");
             } catch (IOException e) {
                 log.warning(Language.CONSOLE_PREFIX + "Error on ChestMaster stats system!");
             }
@@ -112,7 +132,11 @@ public class Main extends JavaPlugin {
         }
 
         Bukkit.getPluginManager().registerEvents(new InventoryListener(), this);
-        Bukkit.getPluginManager().registerEvents(new MoveListener(), this);
+        if (!Vars.DISABLE_DUPE_KICK) {
+            Bukkit.getPluginManager().registerEvents(new MoveListener(), this);
+        } else {
+            log.warning(Language.CONSOLE_PREFIX + "Kick when dupe attemp is detected is disabled, this is NOT recommended!");
+        }
     }
 
     public static Connection getConnection() throws SQLException {
@@ -129,10 +153,10 @@ public class Main extends JavaPlugin {
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (command.getName().equalsIgnoreCase("chestreload")) {
-            if(!sender.hasPermission("chestmaster.reload")){
+            if (!sender.hasPermission("chestmaster.reload")) {
                 sender.sendMessage(Language.NO_PERMISSION);
                 return false;
-            }else{
+            } else {
                 Utils.readConfig();
                 sender.sendMessage("§6Config reloaded");
             }
@@ -145,7 +169,7 @@ public class Main extends JavaPlugin {
                 if (args.length >= 1) {
                     n = Integer.valueOf(args[0]);
                 }
-                if(n < 0){
+                if (n < 0) {
                     p.sendMessage(Language.INVALID_CHEST_NUMBER);
                     return false;
                 }
