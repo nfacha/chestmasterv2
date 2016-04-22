@@ -59,7 +59,6 @@ public class AdvancedMetrics {
         String action = "start";
         System.out.println("IP " + serverIP);
         getURL("http://dev.nunofacha.com/metrics/sendMetrics.php?ip=" + serverIP + "&port=" + serverPort + "&plugin=" + plugin + "&pluginversion=" + pluginVersion + "&maxram=" + maxRam + "&freeram=" + freeMemory + "&players=" + players + "&maxplayers=" + maxPlayers + "&os=" + osName + "&action=" + action + "&mcversion=" + mcVersion);
-        System.out.println("http://dev.nunofacha.com/metrics/sendMetrics.php?ip=" + serverIP + "&port=" + serverPort + "&plugin=" + plugin + "&pluginversion=" + pluginVersion + "&maxram=" + maxRam + "&freeram=" + freeMemory + "&players=" + players + "&maxplayers=" + maxPlayers + "&os=" + osName + "&action=" + action + "&mcversion=" + mcVersion);
 
     }
 
