@@ -26,11 +26,12 @@ import org.mcstats.MetricsLite;
  * @author facha
  */
 public class Main extends JavaPlugin {
-
+    
     public static Logger log = Bukkit.getLogger();
     public static Main plugin;
     public static Connection conn = null;
-
+    public static AdvancedMetrics advancedMetrics;
+    
     public void onEnable() {
         plugin = this;
         if (!new File(Main.plugin.getDataFolder() + "/config.yml").exists()) {
@@ -49,24 +50,24 @@ public class Main extends JavaPlugin {
                 } catch (Exception ex) {
                     Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
+                
             } else {
-                if (Main.plugin.getConfig().isSet("disable_dupe_kick")) {
+                if (!Main.plugin.getConfig().isSet("disable_dupe_kick")) {
                     Main.plugin.getConfig().set("disable_dupe_kick", false);
                     saveConfig();
                     log.config(Language.CONSOLE_PREFIX + "Added disable_dupe_kick key to config file as FALSE");
                 }
-                if (Main.plugin.getConfig().isSet("networking.use_advanced_metrics")) {
+                if (!Main.plugin.getConfig().isSet("networking.use_advanced_metrics")) {
                     Main.plugin.getConfig().set("networking.use_advanced_metrics", true);
                     saveConfig();
                     log.config(Language.CONSOLE_PREFIX + "Added networking.use_advanced_metrics key to config file as TRUE");
                 }
-                if (Main.plugin.getConfig().isSet("block_creative_access")) {
+                if (!Main.plugin.getConfig().isSet("block_creative_access")) {
                     Main.plugin.getConfig().set("block_creative_access", false);
                     saveConfig();
                     log.config(Language.CONSOLE_PREFIX + "Added block_creative_access key to config file as false");
                 }
-                if (Main.plugin.getConfig().isSet("lang.NO_PERMISSION_CREATIVE")) {
+                if (!Main.plugin.getConfig().isSet("lang.NO_PERMISSION_CREATIVE")) {
                     Main.plugin.getConfig().set("lang.NO_PERMISSION_CREATIVE", "You cant use /chest while in creative gamemode");
                     saveConfig();
                     log.config(Language.CONSOLE_PREFIX + "Added lang.NO_PERMISSION_CREATIVE language string to config file as You cant use /chest while in creative gamemode");
@@ -86,7 +87,7 @@ public class Main extends JavaPlugin {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
             registerMySQLKeepAlive();
-
+            
         } else {
             log.info(Language.CONSOLE_PREFIX + "Using SQLite!");
             boolean e = registerSQLitekeepAlive();
@@ -99,7 +100,7 @@ public class Main extends JavaPlugin {
             } else {
                 Main.log.info(Language.CONSOLE_PREFIX + "SQLite already exists!");
             }
-
+            
         }
         try {
             Utils.checkSQLVersion();
@@ -113,11 +114,11 @@ public class Main extends JavaPlugin {
                 log.warning(Language.CONSOLE_PREFIX + "New update available, update at: http://dev.bukkit.org/bukkit-plugins/chestmaster/");
             } else {
                 log.info(Language.CONSOLE_PREFIX + "You are running the latest version :)");
-
+                
             }
         } else {
             log.warning(Language.CONSOLE_PREFIX + "Updater is disabled :(");
-
+            
         }
         if (Vars.METRICS) {
             try {
@@ -130,7 +131,16 @@ public class Main extends JavaPlugin {
         } else {
             log.warning(Language.CONSOLE_PREFIX + "Metrics are disabled :(");
         }
-
+        if (Vars.ADVANCED_METRICS) {
+            advancedMetrics = new AdvancedMetrics();
+            advancedMetrics.serverStart();
+            log.info(Language.CONSOLE_PREFIX + "Sending start ping command to AdvancedMetrics!");
+            advancedMetrics.registerPinger();
+            log.info(Language.CONSOLE_PREFIX + "Registered pinger to AdvancedMetrics!");
+        } else {
+            log.warning(Language.CONSOLE_PREFIX + "AdvancedMetrics are disabled :(");
+        }
+        
         Bukkit.getPluginManager().registerEvents(new InventoryListener(), this);
         if (!Vars.DISABLE_DUPE_KICK) {
             Bukkit.getPluginManager().registerEvents(new MoveListener(), this);
@@ -139,6 +149,13 @@ public class Main extends JavaPlugin {
         }
     }
 
+    public void onDisable() {
+        if (Vars.ADVANCED_METRICS) {
+            advancedMetrics.serverStop();
+            log.info(Language.CONSOLE_PREFIX + "Sending stop ping command to AdvancedMetrics!");
+        }
+    }
+    
     public static Connection getConnection() throws SQLException {
         Connection c = null;
         if (!Vars.USE_SQL) {
@@ -150,7 +167,7 @@ public class Main extends JavaPlugin {
 
         //return c;
     }
-
+    
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (command.getName().equalsIgnoreCase("chestreload")) {
             if (!sender.hasPermission("chestmaster.reload")) {
@@ -164,7 +181,7 @@ public class Main extends JavaPlugin {
         if (command.getName().equalsIgnoreCase("chest")) {
             Player p = (Player) sender;
             int n = 1;
-
+            
             try {
                 if (args.length >= 1) {
                     n = Integer.valueOf(args[0]);
@@ -182,7 +199,7 @@ public class Main extends JavaPlugin {
                     if (!p.hasPermission("chestmaster.open")) {
                         p.sendMessage(Language.NO_PERMISSION);
                         return false;
-
+                        
                     }
                 }
                 ChestCommand.openChest(p, n);
@@ -213,13 +230,13 @@ public class Main extends JavaPlugin {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+        
         return false;
     }
-
+    
     public static void registerMySQLKeepAlive() {
         Bukkit.getScheduler().scheduleAsyncRepeatingTask(Main.plugin, new Runnable() {
-
+            
             @Override
             public void run() {
                 try {
@@ -228,11 +245,11 @@ public class Main extends JavaPlugin {
                 } catch (SQLException ex) {
                     Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
+                
             }
         }, 300, 300);
     }
-
+    
     public static boolean registerSQLitekeepAlive() {
         boolean existed = new File(Main.plugin.getDataFolder() + "/penguin.db").exists();
         String path = Main.plugin.getDataFolder().getAbsolutePath();
@@ -244,7 +261,7 @@ public class Main extends JavaPlugin {
             System.exit(0);
         }
         Bukkit.getScheduler().scheduleAsyncRepeatingTask(Main.plugin, new Runnable() {
-
+            
             @Override
             public void run() {
                 try {
@@ -253,10 +270,10 @@ public class Main extends JavaPlugin {
                 } catch (SQLException ex) {
                     Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
+                
             }
         }, 300, 300);
         return existed;
     }
-
+    
 }
