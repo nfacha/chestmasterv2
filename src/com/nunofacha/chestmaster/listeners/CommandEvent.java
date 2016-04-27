@@ -21,17 +21,18 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 /**
  *
- * @author TGPSI-2ano
+ * @author Facha
  */
 public class CommandEvent implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onCommand(PlayerCommandPreprocessEvent ev) {
-        String command = ev.getMessage().split("  ")[0];
+        String command = ev.getMessage().split(" ")[0];
         String[] args = ev.getMessage().replace(command + " ", "").split(" ");
 
-        if (command.equalsIgnoreCase(Vars.CHEST_COMMAND_NAME)) {
+        if (command.equalsIgnoreCase("/"+Vars.CHEST_COMMAND_NAME)) {
             Player p = ev.getPlayer();
+            ev.setCancelled(true);
             int n = 1;
 
             try {

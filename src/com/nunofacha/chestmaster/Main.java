@@ -55,27 +55,27 @@ public class Main extends JavaPlugin {
                 if (!Main.plugin.getConfig().isSet("disable_dupe_kick")) {
                     Main.plugin.getConfig().set("disable_dupe_kick", false);
                     saveConfig();
-                    log.config(Language.CONSOLE_PREFIX + "Added disable_dupe_kick key to config file as FALSE");
+                    log.info(Language.CONSOLE_PREFIX + "Added disable_dupe_kick key to config file as FALSE");
                 }
                 if (!Main.plugin.getConfig().isSet("command_name")) {
                     Main.plugin.getConfig().set("command_name", "chest");
                     saveConfig();
-                    log.config(Language.CONSOLE_PREFIX + "Added command_name key to config file as chest");
+                    log.info(Language.CONSOLE_PREFIX + "Added command_name key to config file as chest");
                 }
                 if (!Main.plugin.getConfig().isSet("networking.use_advanced_metrics")) {
                     Main.plugin.getConfig().set("networking.use_advanced_metrics", true);
                     saveConfig();
-                    log.config(Language.CONSOLE_PREFIX + "Added networking.use_advanced_metrics key to config file as TRUE");
+                    log.info(Language.CONSOLE_PREFIX + "Added networking.use_advanced_metrics key to config file as TRUE");
                 }
                 if (!Main.plugin.getConfig().isSet("block_creative_access")) {
                     Main.plugin.getConfig().set("block_creative_access", false);
                     saveConfig();
-                    log.config(Language.CONSOLE_PREFIX + "Added block_creative_access key to config file as false");
+                    log.info(Language.CONSOLE_PREFIX + "Added block_creative_access key to config file as false");
                 }
                 if (!Main.plugin.getConfig().isSet("lang.NO_PERMISSION_CREATIVE")) {
                     Main.plugin.getConfig().set("lang.NO_PERMISSION_CREATIVE", "You cant use /chest while in creative gamemode");
                     saveConfig();
-                    log.config(Language.CONSOLE_PREFIX + "Added lang.NO_PERMISSION_CREATIVE language string to config file as You cant use /chest while in creative gamemode");
+                    log.info(Language.CONSOLE_PREFIX + "Added lang.NO_PERMISSION_CREATIVE language string to config file as You cant use /chest while in creative gamemode");
                 }
                 log.info(Language.CONSOLE_PREFIX + "Config file detected, reading config now!");
                 Utils.readConfig();
