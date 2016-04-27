@@ -46,12 +46,7 @@ public class NewVersionConverter {
             }
         }
         Main.log.info(Language.CONSOLE_PREFIX+chests+" chests found");
-//        Set<String> allPlayers = Main.plugin.getConfig().getConfigurationSection("inventarios").getKeys(false);
-//        Main.log.info(Language.CONSOLE_PREFIX + allPlayers.size() + " players found");
-//        for (String p : allPlayers) {
-//            List<String> player_chests = Main.plugin.getConfig().getConfigurationSection("inventarios").getStringList("inventatios." + p);
-//            chests = chests + player_chests.size();
-//        }
+
         Main.log.info(Language.CONSOLE_PREFIX + chests + " chests found");
         Main.log.info(Language.CONSOLE_PREFIX + "Starting migration now, this can take a LONG time depending the chests amount!");
         for (String name : allPlayers) {
@@ -62,7 +57,6 @@ public class NewVersionConverter {
                 int chest_number = Integer.valueOf(c);
                 String chest_data = Main.plugin.getConfig().getString("inventarios." + name + "." + c);
                 Main.log.info(Language.CONSOLE_PREFIX + " Migrating chest " + chest_number);
-                //System.out.println(chest_data);
                 Inventory v = StringToInventory(chest_data);
                 String serializedInventory = Utils.serializeInventory(v);
                 String target = Utils.getOfflinePlayerIdentifier(Bukkit.getOfflinePlayer(name));
@@ -102,8 +96,6 @@ public class NewVersionConverter {
             for (String itemInfo : serializedItemStack) {
                 String[] itemAttribute = itemInfo.split("@");
                 if (itemAttribute[0].equals("t")) {
-                    //PegarIS pis = new PegarIS();
-                    //is = pis.Pegar(itemAttribute[1], 1);
                     is = new ItemStack(Material.getMaterial(Integer.valueOf(itemAttribute[1])));
                     createdItemStack = true;
                 } else if (itemAttribute[0].equals("d") && createdItemStack) {

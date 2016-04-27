@@ -1,7 +1,7 @@
 package com.nunofacha.chestmaster;
 
 import com.nunofacha.chestmaster.commands.AdmChestCommand;
-import com.nunofacha.chestmaster.commands.ChestCommand;
+import com.nunofacha.chestmaster.listeners.CommandEvent;
 import com.nunofacha.chestmaster.listeners.InventoryListener;
 import com.nunofacha.chestmaster.listeners.MoveListener;
 import java.io.File;
@@ -56,6 +56,11 @@ public class Main extends JavaPlugin {
                     Main.plugin.getConfig().set("disable_dupe_kick", false);
                     saveConfig();
                     log.config(Language.CONSOLE_PREFIX + "Added disable_dupe_kick key to config file as FALSE");
+                }
+                if (!Main.plugin.getConfig().isSet("command_name")) {
+                    Main.plugin.getConfig().set("command_name", "chest");
+                    saveConfig();
+                    log.config(Language.CONSOLE_PREFIX + "Added command_name key to config file as chest");
                 }
                 if (!Main.plugin.getConfig().isSet("networking.use_advanced_metrics")) {
                     Main.plugin.getConfig().set("networking.use_advanced_metrics", true);
@@ -144,6 +149,7 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new InventoryListener(), this);
         if (!Vars.DISABLE_DUPE_KICK) {
             Bukkit.getPluginManager().registerEvents(new MoveListener(), this);
+            Bukkit.getPluginManager().registerEvents(new CommandEvent(), this);
         } else {
             log.warning(Language.CONSOLE_PREFIX + "Kick when dupe attemp is detected is disabled, this is NOT recommended!");
         }
@@ -178,39 +184,39 @@ public class Main extends JavaPlugin {
                 sender.sendMessage("§6Config reloaded");
             }
         }
-        if (command.getName().equalsIgnoreCase("chest")) {
-            Player p = (Player) sender;
-            int n = 1;
-            
-            try {
-                if (args.length >= 1) {
-                    n = Integer.valueOf(args[0]);
-                }
-                if (n < 0) {
-                    p.sendMessage(Language.INVALID_CHEST_NUMBER);
-                    return false;
-                }
-                if (n != 1) {
-                    if (!p.hasPermission("chestmaster.multiple." + n)) {
-                        p.sendMessage(Language.NO_PERMISSION_CHEST_NUMBER);
-                        return false;
-                    }
-                } else {
-                    if (!p.hasPermission("chestmaster.open")) {
-                        p.sendMessage(Language.NO_PERMISSION);
-                        return false;
-                        
-                    }
-                }
-                ChestCommand.openChest(p, n);
-            } catch (SQLException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (NumberFormatException e) {
-                p.sendMessage(Language.INVALID_CHEST_NUMBER);
-            }
-        }
+//        if (command.getName().equalsIgnoreCase("chest")) {
+//            Player p = (Player) sender;
+//            int n = 1;
+//            
+//            try {
+//                if (args.length >= 1) {
+//                    n = Integer.valueOf(args[0]);
+//                }
+//                if (n < 0) {
+//                    p.sendMessage(Language.INVALID_CHEST_NUMBER);
+//                    return false;
+//                }
+//                if (n != 1) {
+//                    if (!p.hasPermission("chestmaster.multiple." + n)) {
+//                        p.sendMessage(Language.NO_PERMISSION_CHEST_NUMBER);
+//                        return false;
+//                    }
+//                } else {
+//                    if (!p.hasPermission("chestmaster.open")) {
+//                        p.sendMessage(Language.NO_PERMISSION);
+//                        return false;
+//                        
+//                    }
+//                }
+//                ChestCommand.openChest(p, n);
+//            } catch (SQLException ex) {
+//                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+//            } catch (IOException ex) {
+//                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+//            } catch (NumberFormatException e) {
+//                p.sendMessage(Language.INVALID_CHEST_NUMBER);
+//            }
+//        }
         if (command.getName().equals("admchest")) {
             Player p = (Player) sender;
             int n = 1;

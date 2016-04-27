@@ -32,5 +32,6 @@ public class Vars {
     public static boolean ADVANCED_METRICS = true;
     public static boolean DISABLE_DUPE_KICK = false;
     public static boolean BLOCK_CREATIVE_ACCESS = false;
+    public static String CHEST_COMMAND_NAME = "chest";
 
 }

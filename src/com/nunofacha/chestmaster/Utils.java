@@ -163,6 +163,7 @@ public class Utils {
         Vars.DISABLE_DUPE_KICK = Main.plugin.getConfig().getBoolean("disable_dupe_kick");
         Vars.ADVANCED_METRICS = Main.plugin.getConfig().getBoolean("networking.use_advanced_metrics");
         Vars.BLOCK_CREATIVE_ACCESS = Main.plugin.getConfig().getBoolean("block_creative_access");
+        Vars.CHEST_COMMAND_NAME = Main.plugin.getConfig().getString("command_name");
         //Load Language Files
         Language.ADM_CHEST_USAGE = CHAT_PREFIX + Main.plugin.getConfig().getString("lang.ADM_CHEST_USAGE");
         Language.INVALID_CHEST_NUMBER = CHAT_PREFIX + Main.plugin.getConfig().getString("lang.INVALID_CHEST_NUMBER");
