@@ -28,16 +28,18 @@ public class CommandEvent implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onCommand(PlayerCommandPreprocessEvent ev) {
         String command = ev.getMessage().split(" ")[0];
-        String[] args = ev.getMessage().replace(command + " ", "").split(" ");
-
+        String[] args = ev.getMessage().replace(command, "").split(" ");
+        System.out.println("Command: "+command);
+        for(String s : args){
+            System.out.println(s);
+        }
         if (command.equalsIgnoreCase("/"+Vars.CHEST_COMMAND_NAME)) {
             Player p = ev.getPlayer();
             ev.setCancelled(true);
             int n = 1;
-
             try {
-                if (args.length >= 1) {
-                    n = Integer.valueOf(args[0]);
+                if (args.length >= 2) {
+                    n = Integer.valueOf(args[1]);
                 }
                 if (n < 0) {
                     p.sendMessage(Language.INVALID_CHEST_NUMBER);
