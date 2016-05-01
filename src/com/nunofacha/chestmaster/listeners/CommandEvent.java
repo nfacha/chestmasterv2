@@ -29,10 +29,6 @@ public class CommandEvent implements Listener {
     public void onCommand(PlayerCommandPreprocessEvent ev) {
         String command = ev.getMessage().split(" ")[0];
         String[] args = ev.getMessage().replace(command, "").split(" ");
-        System.out.println("Command: "+command);
-        for(String s : args){
-            System.out.println(s);
-        }
         if (command.equalsIgnoreCase("/"+Vars.CHEST_COMMAND_NAME)) {
             Player p = ev.getPlayer();
             ev.setCancelled(true);
