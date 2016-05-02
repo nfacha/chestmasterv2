@@ -5,6 +5,7 @@
  */
 package com.nunofacha.chestmaster.listeners;
 
+import com.nunofacha.chestmaster.AdvancedMetrics;
 import com.nunofacha.chestmaster.Vars;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,12 +20,17 @@ public class MoveListener implements Listener {
 
     @EventHandler
     public void onMove(PlayerMoveEvent e) {
-        Player p = e.getPlayer();
-        if (Vars.activeChest.contains(p)) {
-            p.closeInventory();
-            p.kickPlayer("Do not try to duplicate items!");
-            Vars.activeChest.remove(p);
+        try {
+            Player p = e.getPlayer();
+            if (Vars.activeChest.contains(p)) {
+                p.closeInventory();
+                p.kickPlayer("Do not try to duplicate items!");
+                Vars.activeChest.remove(p);
+            }
+        } catch (Exception r) {
+            AdvancedMetrics.reportError(r);
         }
+
     }
 
 }

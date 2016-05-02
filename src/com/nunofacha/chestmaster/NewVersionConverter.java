@@ -8,7 +8,6 @@ package com.nunofacha.chestmaster;
 import static com.nunofacha.chestmaster.Main.registerSQLitekeepAlive;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,55 +23,60 @@ import org.bukkit.inventory.ItemStack;
  */
 public class NewVersionConverter {
 
-    public static void convert() throws Exception {
-        boolean e = registerSQLitekeepAlive();
-        if (!e) {
-            try {
-                Utils.createTables();
-            } catch (SQLException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+    public static void convert() {
+        try {
+            boolean e = registerSQLitekeepAlive();
+            if (!e) {
+                try {
+                    Utils.createTables();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                Main.log.info(Language.CONSOLE_PREFIX + "SQLite already exists!");
             }
-        } else {
-            Main.log.info(Language.CONSOLE_PREFIX + "SQLite already exists!");
-        }
-        Main.log.info(Language.CONSOLE_PREFIX + "Starting to migrate data to new ChestMaster 2.0 Storage System!");
-        int chests = 0;
-        Set<String> allPlayers = Main.plugin.getConfig().getConfigurationSection("inventarios").getKeys(false);
-        Main.log.info(Language.CONSOLE_PREFIX+allPlayers.size()+" players found");
-        for (String name : allPlayers) {
-            Set<String> player_chests = Main.plugin.getConfig().getConfigurationSection("inventarios." + name).getKeys(false);
-            for (String key : player_chests) {
-                chests = chests + player_chests.size();
-            }
-        }
-        Main.log.info(Language.CONSOLE_PREFIX+chests+" chests found");
-
-        Main.log.info(Language.CONSOLE_PREFIX + chests + " chests found");
-        Main.log.info(Language.CONSOLE_PREFIX + "Starting migration now, this can take a LONG time depending the chests amount!");
-        for (String name : allPlayers) {
-            Main.log.info(Language.CONSOLE_PREFIX + "Migrating " + name + " chests");
-            Set<String> key = Main.plugin.getConfig().getConfigurationSection("inventarios." + name).getKeys(false);
-            Main.log.info(Language.CONSOLE_PREFIX + key.size() + " chests found for player " + name);
-            for (String c : key) {
-                int chest_number = Integer.valueOf(c);
-                String chest_data = Main.plugin.getConfig().getString("inventarios." + name + "." + c);
-                Main.log.info(Language.CONSOLE_PREFIX + " Migrating chest " + chest_number);
-                Inventory v = StringToInventory(chest_data);
-                String serializedInventory = Utils.serializeInventory(v);
-                String target = Utils.getOfflinePlayerIdentifier(Bukkit.getOfflinePlayer(name));
-                if (!Utils.isInventoryEmpty(v)) {
-                    PreparedStatement st2 = Main.getConnection().prepareStatement("INSERT INTO `chests` (`id`, `uuid`, `number`, `inventory`) VALUES (null, ?, ?, ?);");
-                    st2.setString(1, target);
-                    st2.setInt(2, chest_number);
-                    st2.setString(3, serializedInventory);
-                    st2.executeUpdate();
-                    Main.log.info(Language.CONSOLE_PREFIX + "Migrated chest number " + chest_number + " from player " + name + " successfuly!");
-                } else {
-                    Main.log.info(Language.CONSOLE_PREFIX + "Chest " + chest_number + " from player " + name + " was not migrated because its empty!");
+            Main.log.info(Language.CONSOLE_PREFIX + "Starting to migrate data to new ChestMaster 2.0 Storage System!");
+            int chests = 0;
+            Set<String> allPlayers = Main.plugin.getConfig().getConfigurationSection("inventarios").getKeys(false);
+            Main.log.info(Language.CONSOLE_PREFIX + allPlayers.size() + " players found");
+            for (String name : allPlayers) {
+                Set<String> player_chests = Main.plugin.getConfig().getConfigurationSection("inventarios." + name).getKeys(false);
+                for (String key : player_chests) {
+                    chests = chests + player_chests.size();
                 }
             }
+            Main.log.info(Language.CONSOLE_PREFIX + chests + " chests found");
+
+            Main.log.info(Language.CONSOLE_PREFIX + chests + " chests found");
+            Main.log.info(Language.CONSOLE_PREFIX + "Starting migration now, this can take a LONG time depending the chests amount!");
+            for (String name : allPlayers) {
+                Main.log.info(Language.CONSOLE_PREFIX + "Migrating " + name + " chests");
+                Set<String> key = Main.plugin.getConfig().getConfigurationSection("inventarios." + name).getKeys(false);
+                Main.log.info(Language.CONSOLE_PREFIX + key.size() + " chests found for player " + name);
+                for (String c : key) {
+                    int chest_number = Integer.valueOf(c);
+                    String chest_data = Main.plugin.getConfig().getString("inventarios." + name + "." + c);
+                    Main.log.info(Language.CONSOLE_PREFIX + " Migrating chest " + chest_number);
+                    Inventory v = StringToInventory(chest_data);
+                    String serializedInventory = Utils.serializeInventory(v);
+                    String target = Utils.getOfflinePlayerIdentifier(Bukkit.getOfflinePlayer(name));
+                    if (!Utils.isInventoryEmpty(v)) {
+                        PreparedStatement st2 = Main.getConnection().prepareStatement("INSERT INTO `chests` (`id`, `uuid`, `number`, `inventory`) VALUES (null, ?, ?, ?);");
+                        st2.setString(1, target);
+                        st2.setInt(2, chest_number);
+                        st2.setString(3, serializedInventory);
+                        st2.executeUpdate();
+                        Main.log.info(Language.CONSOLE_PREFIX + "Migrated chest number " + chest_number + " from player " + name + " successfuly!");
+                    } else {
+                        Main.log.info(Language.CONSOLE_PREFIX + "Chest " + chest_number + " from player " + name + " was not migrated because its empty!");
+                    }
+                }
+            }
+            Main.log.info(Language.CONSOLE_PREFIX + "Migration Completed!");
+
+        } catch (Exception r) {
+            AdvancedMetrics.reportError(r);
         }
-        Main.log.info(Language.CONSOLE_PREFIX + "Migration Completed!");
 
     }
 

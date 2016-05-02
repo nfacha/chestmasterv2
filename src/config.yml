@@ -17,6 +17,7 @@ networking:
     use_metrics: true #Enable/Disable the Metrics system, please avoid disabling this <3
     use_autoupdate: true #I recommend to keep this active
     use_advanced_metrics: true #More advanced metrics, read plugin page on bukkit for more information, please avoid disabling this <3
+    report_errors: true #Report errors to the developer, requires use_advancec_metrics to be on!
 
 
 lang:

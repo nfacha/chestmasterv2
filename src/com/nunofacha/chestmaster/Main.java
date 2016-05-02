@@ -1,6 +1,7 @@
 package com.nunofacha.chestmaster;
 
 import com.nunofacha.chestmaster.commands.AdmChestCommand;
+import com.nunofacha.chestmaster.commands.ChestDebugCommand;
 import com.nunofacha.chestmaster.listeners.CommandEvent;
 import com.nunofacha.chestmaster.listeners.InventoryListener;
 import com.nunofacha.chestmaster.listeners.MoveListener;
@@ -66,6 +67,11 @@ public class Main extends JavaPlugin {
                     Main.plugin.getConfig().set("networking.use_advanced_metrics", true);
                     saveConfig();
                     log.info(Language.CONSOLE_PREFIX + "Added networking.use_advanced_metrics key to config file as TRUE");
+                }
+                if (!Main.plugin.getConfig().isSet("networking.report_errors")) {
+                    Main.plugin.getConfig().set("networking.report_errors", true);
+                    saveConfig();
+                    log.info(Language.CONSOLE_PREFIX + "Added networking.report_errors key to config file as TRUE");
                 }
                 if (!Main.plugin.getConfig().isSet("block_creative_access")) {
                     Main.plugin.getConfig().set("block_creative_access", false);
@@ -142,6 +148,7 @@ public class Main extends JavaPlugin {
             log.info(Language.CONSOLE_PREFIX + "Sending start ping command to AdvancedMetrics!");
             advancedMetrics.registerPinger();
             log.info(Language.CONSOLE_PREFIX + "Registered pinger to AdvancedMetrics!");
+            log.info(Language.CONSOLE_PREFIX + "This server AdvancedMetrics ID is: " + advancedMetrics.metricsID);
         } else {
             log.warning(Language.CONSOLE_PREFIX + "AdvancedMetrics are disabled :(");
         }
@@ -153,8 +160,9 @@ public class Main extends JavaPlugin {
         } else {
             log.warning(Language.CONSOLE_PREFIX + "Kick when dupe attemp is detected is disabled, this is NOT recommended!");
         }
+        getCommand("chestdebug").setExecutor(new ChestDebugCommand());
     }
-
+    
     public void onDisable() {
         if (Vars.ADVANCED_METRICS) {
             advancedMetrics.serverStop();

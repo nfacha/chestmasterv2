@@ -8,10 +8,16 @@ package com.nunofacha.chestmaster;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -19,6 +25,7 @@ import java.net.URLEncoder;
  */
 public class AdvancedMetrics {
 
+    public static String metricsID = "-1";
     private String getURL(String target) {
         try {
             URL url = new URL(target);
@@ -57,7 +64,7 @@ public class AdvancedMetrics {
         String mcVersion = URLEncoder.encode(Main.plugin.getServer().getVersion());
         String osName = URLEncoder.encode(System.getProperty("os.name"));
         String action = "start";
-        getURL("http://dev.nunofacha.com/metrics/sendMetrics.php?ip=" + serverIP + "&port=" + serverPort + "&plugin=" + plugin + "&pluginversion=" + pluginVersion + "&maxram=" + maxRam + "&freeram=" + freeMemory + "&players=" + players + "&maxplayers=" + maxPlayers + "&os=" + osName + "&action=" + action + "&mcversion=" + mcVersion);
+        metricsID = getURL("http://dev.nunofacha.com/metrics/sendMetrics.php?ip=" + serverIP + "&port=" + serverPort + "&plugin=" + plugin + "&pluginversion=" + pluginVersion + "&maxram=" + maxRam + "&freeram=" + freeMemory + "&players=" + players + "&maxplayers=" + maxPlayers + "&os=" + osName + "&action=" + action + "&mcversion=" + mcVersion);
 
     }
 
@@ -99,6 +106,54 @@ public class AdvancedMetrics {
                 sendPing();
             }
         }, 1200, 1200);
+    }
+
+    public static void reportError(Exception errorMessage) {
+        try {
+            if (!Vars.REPORT_ERRORS) {
+                Main.log.warning(Language.CONSOLE_PREFIX + "An error ocurred, but it will not be reported because you disabled error reporting");
+            } else {
+                Main.log.info(Language.CONSOLE_PREFIX + "An error ocurred, and was reported to the developer");
+
+            }
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            errorMessage.printStackTrace(pw);
+            String serverIP = Main.plugin.getServer().getIp();
+            int serverPort = Main.plugin.getServer().getPort();
+            String plugin = "ChestMaster";
+            String POST_URL = "http://dev.nunofacha.com/metrics/sendMetrics.php?ip=" + serverIP + "&port=" + serverPort + "&plugin=" + plugin + "&action=errorreport";
+            String POST_DATA = "errorMessage=" + sw.toString();
+            URL obj = new URL(POST_URL);
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+            con.setRequestMethod("POST");
+            con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 5.1; rv:19.0) Gecko/20100101 Firefox/19.0 - SquirrelUpdater");
+
+            con.setDoOutput(true);
+            OutputStream os = con.getOutputStream();
+            os.write(POST_DATA.getBytes());
+            os.flush();
+            os.close();
+
+            int responseCode = con.getResponseCode();
+
+            if (responseCode == HttpURLConnection.HTTP_OK) { //success
+                BufferedReader in = new BufferedReader(new InputStreamReader(
+                        con.getInputStream()));
+                String inputLine;
+                StringBuffer response = new StringBuffer();
+
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+
+            }
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(AdvancedMetrics.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(AdvancedMetrics.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

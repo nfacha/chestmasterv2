@@ -5,6 +5,7 @@
  */
 package com.nunofacha.chestmaster.listeners;
 
+import com.nunofacha.chestmaster.AdvancedMetrics;
 import com.nunofacha.chestmaster.Language;
 import com.nunofacha.chestmaster.Main;
 import com.nunofacha.chestmaster.Vars;
@@ -29,39 +30,45 @@ public class CommandEvent implements Listener {
     public void onCommand(PlayerCommandPreprocessEvent ev) {
         String command = ev.getMessage().split(" ")[0];
         String[] args = ev.getMessage().replace(command, "").split(" ");
-        if (command.equalsIgnoreCase("/"+Vars.CHEST_COMMAND_NAME)) {
-            Player p = ev.getPlayer();
-            ev.setCancelled(true);
-            int n = 1;
-            try {
-                if (args.length >= 2) {
-                    n = Integer.valueOf(args[1]);
-                }
-                if (n < 0) {
+        try {
+            if (command.equalsIgnoreCase("/" + Vars.CHEST_COMMAND_NAME)) {
+                Player p = ev.getPlayer();
+                ev.setCancelled(true);
+                int n = 1;
+                try {
+                    if (args.length >= 2) {
+                        n = Integer.valueOf(args[1]);
+                    }
+                    if (n < 0) {
+                        p.sendMessage(Language.INVALID_CHEST_NUMBER);
+                        return;
+                    }
+                    if (n != 1) {
+                        if (!p.hasPermission("chestmaster.multiple." + n)) {
+                            p.sendMessage(Language.NO_PERMISSION_CHEST_NUMBER);
+                            return;
+                        }
+                    } else {
+                        if (!p.hasPermission("chestmaster.open")) {
+                            p.sendMessage(Language.NO_PERMISSION);
+                            return;
+
+                        }
+                    }
+                    ChestCommand.openChest(p, n);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                    AdvancedMetrics.reportError(ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                    AdvancedMetrics.reportError(ex);
+                } catch (NumberFormatException e) {
                     p.sendMessage(Language.INVALID_CHEST_NUMBER);
-                    return;
                 }
-                if (n != 1) {
-                    if (!p.hasPermission("chestmaster.multiple." + n)) {
-                        p.sendMessage(Language.NO_PERMISSION_CHEST_NUMBER);
-                        return;
-                    }
-                } else {
-                    if (!p.hasPermission("chestmaster.open")) {
-                        p.sendMessage(Language.NO_PERMISSION);
-                        return;
 
-                    }
-                }
-                ChestCommand.openChest(p, n);
-            } catch (SQLException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (NumberFormatException e) {
-                p.sendMessage(Language.INVALID_CHEST_NUMBER);
             }
-
+        } catch (Exception r) {
+            AdvancedMetrics.reportError(r);
         }
-    }
+    }//
 }

@@ -164,6 +164,14 @@ public class Utils {
         Vars.ADVANCED_METRICS = Main.plugin.getConfig().getBoolean("networking.use_advanced_metrics");
         Vars.BLOCK_CREATIVE_ACCESS = Main.plugin.getConfig().getBoolean("block_creative_access");
         Vars.CHEST_COMMAND_NAME = Main.plugin.getConfig().getString("command_name");
+        if (Vars.ADVANCED_METRICS) {
+            Vars.REPORT_ERRORS = Main.plugin.getConfig().getBoolean("networking.report_errors");
+        } else {
+            if (Main.plugin.getConfig().getBoolean("networking.report_errors")) {
+                Main.log.warning(Language.CONSOLE_PREFIX + "Error reporting is enabled in the config but advanced metrics is disabled, error reporting will only work if advanced metrics is enabled, disabling error reporting");
+            }
+            Vars.REPORT_ERRORS = false;
+        }
         //Load Language Files
         Language.ADM_CHEST_USAGE = CHAT_PREFIX + Main.plugin.getConfig().getString("lang.ADM_CHEST_USAGE");
         Language.INVALID_CHEST_NUMBER = CHAT_PREFIX + Main.plugin.getConfig().getString("lang.INVALID_CHEST_NUMBER");
