@@ -194,7 +194,7 @@ public class Utils {
     }
 
     public static void checkSQLVersion() throws SQLException {
-        final int required_version = 2;
+        final int required_version = 3;
         if (!Main.plugin.getConfig().isSet("sql_version")) {
             Main.plugin.getConfig().set("sql_version", 1);
             Main.plugin.saveConfig();
@@ -224,7 +224,7 @@ public class Utils {
                 Main.plugin.saveConfig();
             }
             if (current == 2) {
-                Main.log.info(Language.CONSOLE_PREFIX + "ISSUE FOUND: inventory MYSQL Column size: https://bitbucket.org/facha/chestmaster-v2.0/issues/1/data-storage-and-permissions-problem");
+                Main.log.info(Language.CONSOLE_PREFIX + "ISSUE FOUND: inventory MYSQL Column size: https://bitbucket.org/facha/chestmaster-v2.0/issues/14/inventory-size-on-database-needs-to-be");
                 if (Vars.USE_SQL) {
                     Main.log.info(Language.CONSOLE_PREFIX + "You are using SQL, so its easy to fix, I LOVE YOU <3");
                     PreparedStatement st = Main.getConnection().prepareStatement("ALTER TABLE chests CHANGE inventory inventory VARCHAR( 65000 )");
