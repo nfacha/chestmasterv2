@@ -156,10 +156,10 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new InventoryListener(), this);
         if (!Vars.DISABLE_DUPE_KICK) {
             Bukkit.getPluginManager().registerEvents(new MoveListener(), this);
-            Bukkit.getPluginManager().registerEvents(new CommandEvent(), this);
         } else {
             log.warning(Language.CONSOLE_PREFIX + "Kick when dupe attemp is detected is disabled, this is NOT recommended!");
         }
+        Bukkit.getPluginManager().registerEvents(new CommandEvent(), this);
         getCommand("chestdebug").setExecutor(new ChestDebugCommand());
     }
     
