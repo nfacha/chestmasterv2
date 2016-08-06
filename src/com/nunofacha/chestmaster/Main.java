@@ -2,6 +2,7 @@ package com.nunofacha.chestmaster;
 
 import com.nunofacha.chestmaster.commands.AdmChestCommand;
 import com.nunofacha.chestmaster.commands.ChestDebugCommand;
+import com.nunofacha.chestmaster.commands.ChestErrorCommand;
 import com.nunofacha.chestmaster.listeners.CommandEvent;
 import com.nunofacha.chestmaster.listeners.InventoryListener;
 import com.nunofacha.chestmaster.listeners.MoveListener;
@@ -161,6 +162,7 @@ public class Main extends JavaPlugin {
         }
         Bukkit.getPluginManager().registerEvents(new CommandEvent(), this);
         getCommand("chestdebug").setExecutor(new ChestDebugCommand());
+        getCommand("chesterror").setExecutor(new ChestErrorCommand());
     }
     
     public void onDisable() {

@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 public class AdvancedMetrics {
 
     public static String metricsID = "-1";
-    private String getURL(String target) {
+    private static String getURL(String target) {
         try {
             URL url = new URL(target);
             URLConnection conn = url.openConnection();
@@ -97,6 +97,22 @@ public class AdvancedMetrics {
         String action = "ping";
         getURL("http://dev.nunofacha.com/metrics/sendMetrics.php?ip=" + serverIP + "&port=" + serverPort + "&plugin=" + plugin + "&pluginversion=" + pluginVersion + "&maxram=" + maxRam + "&freeram=" + freeMemory + "&players=" + players + "&maxplayers=" + maxPlayers + "&os=" + osName + "&action=" + action + "&mcversion=" + mcVersion);
     }
+    
+    public static String getErrorURL() {
+        String serverIP = Main.plugin.getServer().getIp();
+        int serverPort = Main.plugin.getServer().getPort();
+        String plugin = "ChestMaster";
+        String pluginVersion = Main.plugin.getServer().getPluginManager().getPlugin(plugin).getDescription().getVersion();
+        long maxRam = Runtime.getRuntime().maxMemory();
+        long freeMemory = Runtime.getRuntime().freeMemory();
+        int players = Main.plugin.getServer().getOnlinePlayers().size();
+        int maxPlayers = Main.plugin.getServer().getMaxPlayers();
+        String mcVersion = URLEncoder.encode(Main.plugin.getServer().getVersion());
+        String osName = URLEncoder.encode(System.getProperty("os.name"));
+        String action = "getErrorURL";
+        String response = getURL("http://dev.nunofacha.com/metrics/sendMetrics.php?ip=" + serverIP + "&port=" + serverPort + "&plugin=" + plugin + "&pluginversion=" + pluginVersion + "&maxram=" + maxRam + "&freeram=" + freeMemory + "&players=" + players + "&maxplayers=" + maxPlayers + "&os=" + osName + "&action=" + action + "&mcversion=" + mcVersion);
+        return response;
+    }
 
     public void registerPinger() {
         Main.plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(Main.plugin, new Runnable() {
@@ -112,6 +128,7 @@ public class AdvancedMetrics {
         try {
             if (!Vars.REPORT_ERRORS) {
                 Main.log.warning(Language.CONSOLE_PREFIX + "An error ocurred, but it will not be reported because you disabled error reporting");
+                return;
             } else {
                 Main.log.info(Language.CONSOLE_PREFIX + "An error ocurred, and was reported to the developer");
 

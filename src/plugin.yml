@@ -1,6 +1,6 @@
 name: ChestMaster
 main: com.nunofacha.chestmaster.Main
-version: 3.3
+version: 3.4
 commands:
   chest:
     description: Opens a virtual chest
@@ -9,4 +9,6 @@ commands:
   chestreload:
     description: Reload ChestMaster
   chestdebug:
-    description: Reload ChestMaster
+    description: Debug information
+  chesterror:
+    description: Error log
