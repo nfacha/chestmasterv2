@@ -71,7 +71,6 @@ public class AdvancedMetrics {
         if (!getURL("http://dev.nunofacha.com/metrics/hash.php?hash=" + hash).equals("ok")) {
             Main.log.severe(Language.CONSOLE_PREFIX + "Failed to verify plugin integrity, plugin will be disabled for security reasons, please download a version from Bukkit or Spigot!");
             serverStop();
-            //Bukkit.getPluginManager().disablePlugin(Bukkit.getPluginManager().getPlugin(plugin));
             Bukkit.getServer().shutdown();
         } else {
             Main.log.info(Language.CONSOLE_PREFIX + "Plugin passed integrity check");
