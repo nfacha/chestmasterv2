@@ -26,13 +26,13 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
  */
 public class CommandEvent implements Listener {
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent ev) {
         String command = ev.getMessage().split(" ")[0];
         String[] args = ev.getMessage().replace(command, "").split(" ");
         try {
             if (command.equalsIgnoreCase("/" + Vars.CHEST_COMMAND_NAME)) {
-                if(ev.isCancelled()){
+                if (ev.isCancelled()) {
                     return;
                 }
                 Player p = ev.getPlayer();
@@ -51,12 +51,10 @@ public class CommandEvent implements Listener {
                             p.sendMessage(Language.NO_PERMISSION_CHEST_NUMBER);
                             return;
                         }
-                    } else {
-                        if (!p.hasPermission("chestmaster.open")) {
-                            p.sendMessage(Language.NO_PERMISSION);
-                            return;
+                    } else if (!p.hasPermission("chestmaster.open")) {
+                        p.sendMessage(Language.NO_PERMISSION);
+                        return;
 
-                        }
                     }
                     ChestCommand.openChest(p, n);
                 } catch (SQLException ex) {

@@ -139,13 +139,11 @@ public class Utils {
     public static void readConfig() {
         if (Main.plugin.getConfig().getString("storage").equals("sqlite")) {
             Vars.USE_SQL = false;
+        } else if (Main.plugin.getConfig().getString("storage").equals("mysql")) {
+            Vars.USE_SQL = true;
         } else {
-            if (Main.plugin.getConfig().getString("storage").equals("mysql")) {
-                Vars.USE_SQL = true;
-            } else {
-                configError("Invalid Storage, must use 'sqlite' or 'mysql'");
-                return;
-            }
+            configError("Invalid Storage, must use 'sqlite' or 'mysql'");
+            return;
         }
         if (Main.plugin.getConfig().getInt("chest_size") % 9 == 0) {
             Vars.CHEST_SIZE = Main.plugin.getConfig().getInt("chest_size");
@@ -180,7 +178,7 @@ public class Utils {
         Language.NO_PERMISSION_CREATIVE = CHAT_PREFIX + Main.plugin.getConfig().getString("lang.NO_PERMISSION_CREATIVE");
 
         Vars.CHEST_NAME = Main.plugin.getConfig().getString("lang.CHEST_NAME");
-        if(Vars.CHEST_NAME.length() > 32){
+        if (Vars.CHEST_NAME.length() > 32) {
             configError("Chest name cannot be longer that 32 chars");
         }
         Vars.DB_HOST = Main.plugin.getConfig().getString("mysql.hostname");

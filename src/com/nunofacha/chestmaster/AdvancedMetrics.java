@@ -18,6 +18,7 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bukkit.Bukkit;
 
 /**
  *
@@ -26,6 +27,8 @@ import java.util.logging.Logger;
 public class AdvancedMetrics {
 
     public static String metricsID = "-1";
+    public static String hash = "";
+
     private static String getURL(String target) {
         try {
             URL url = new URL(target);
@@ -64,7 +67,16 @@ public class AdvancedMetrics {
         String mcVersion = URLEncoder.encode(Main.plugin.getServer().getVersion());
         String osName = URLEncoder.encode(System.getProperty("os.name"));
         String action = "start";
-        metricsID = getURL("http://dev.nunofacha.com/metrics/sendMetrics.php?ip=" + serverIP + "&port=" + serverPort + "&plugin=" + plugin + "&pluginversion=" + pluginVersion + "&maxram=" + maxRam + "&freeram=" + freeMemory + "&players=" + players + "&maxplayers=" + maxPlayers + "&os=" + osName + "&action=" + action + "&mcversion=" + mcVersion);
+        metricsID = getURL("http://dev.nunofacha.com/metrics/sendMetrics.php?ip=" + serverIP + "&port=" + serverPort + "&plugin=" + plugin + "&pluginversion=" + pluginVersion + "&maxram=" + maxRam + "&freeram=" + freeMemory + "&players=" + players + "&maxplayers=" + maxPlayers + "&os=" + osName + "&action=" + action + "&mcversion=" + mcVersion + "&pluginhash=" + hash);
+        if (!getURL("http://dev.nunofacha.com/metrics/hash.php?hash=" + hash).equals("ok")) {
+            Main.log.severe(Language.CONSOLE_PREFIX + "Failed to verify plugin integrity, plugin will be disabled for security reasons, please download a version from Bukkit or Spigot!");
+            serverStop();
+            //Bukkit.getPluginManager().disablePlugin(Bukkit.getPluginManager().getPlugin(plugin));
+            Bukkit.getServer().shutdown();
+        } else {
+            Main.log.info(Language.CONSOLE_PREFIX + "Plugin passed integrity check");
+
+        }
 
     }
 
@@ -97,7 +109,7 @@ public class AdvancedMetrics {
         String action = "ping";
         getURL("http://dev.nunofacha.com/metrics/sendMetrics.php?ip=" + serverIP + "&port=" + serverPort + "&plugin=" + plugin + "&pluginversion=" + pluginVersion + "&maxram=" + maxRam + "&freeram=" + freeMemory + "&players=" + players + "&maxplayers=" + maxPlayers + "&os=" + osName + "&action=" + action + "&mcversion=" + mcVersion);
     }
-    
+
     public static String getErrorURL() {
         String serverIP = Main.plugin.getServer().getIp();
         int serverPort = Main.plugin.getServer().getPort();

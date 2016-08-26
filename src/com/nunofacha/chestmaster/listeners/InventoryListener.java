@@ -36,19 +36,17 @@ public class InventoryListener implements Listener {
                             st2.setString(3, serializedInventory);
                             st2.executeUpdate();
                         }
+                    } else if (!Utils.isInventoryEmpty(v)) {
+                        PreparedStatement st2 = Main.getConnection().prepareStatement("UPDATE chests SET inventory = ? WHERE uuid = ? AND number = ?");
+                        st2.setString(1, serializedInventory);
+                        st2.setString(2, identifier);
+                        st2.setInt(3, chest_ID);
+                        st2.executeUpdate();
                     } else {
-                        if (!Utils.isInventoryEmpty(v)) {
-                            PreparedStatement st2 = Main.getConnection().prepareStatement("UPDATE chests SET inventory = ? WHERE uuid = ? AND number = ?");
-                            st2.setString(1, serializedInventory);
-                            st2.setString(2, identifier);
-                            st2.setInt(3, chest_ID);
-                            st2.executeUpdate();
-                        } else {
-                            PreparedStatement st2 = Main.getConnection().prepareStatement("DELETE from chests WHERE uuid = ? AND number = ?");
-                            st2.setString(1, identifier);
-                            st2.setInt(2, chest_ID);
-                            st2.executeUpdate();
-                        }
+                        PreparedStatement st2 = Main.getConnection().prepareStatement("DELETE from chests WHERE uuid = ? AND number = ?");
+                        st2.setString(1, identifier);
+                        st2.setInt(2, chest_ID);
+                        st2.executeUpdate();
                     }
                     Vars.open_chests.remove(identifier);
                 }

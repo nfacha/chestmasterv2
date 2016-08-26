@@ -23,15 +23,15 @@ public class ChestErrorCommand implements CommandExecutor {
             sender.sendMessage(Language.NO_PERMISSION);
             return false;
         }
-        
+
         String message = "";
         sender.sendMessage("§aGenerating link, please wait...");
         message = AdvancedMetrics.getErrorURL();
-        if(!message.contains("Permission denied")){
-        sender.sendMessage("§2This is you unique, one-time use link to access your error log on AdvancedMetrics");
-        sender.sendMessage("§6http://dev.nunofacha.com/metrics/errorLog.php?hash="+message);
-        sender.sendMessage("§cBe advised, this link will work only once!");
-        }else{
+        if (!message.contains("Permission denied")) {
+            sender.sendMessage("§2This is you unique, one-time use link to access your error log on AdvancedMetrics");
+            sender.sendMessage("§6http://dev.nunofacha.com/metrics/errorLog.php?hash=" + message);
+            sender.sendMessage("§cBe advised, this link will work only once!");
+        } else {
             sender.sendMessage("§cFailed to generate link, failed security check!");
         }
         return false;
