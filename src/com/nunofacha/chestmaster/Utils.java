@@ -46,11 +46,11 @@ public class Utils {
 
     public static void createTables() throws SQLException {
         if (Vars.USE_SQL) {
-            PreparedStatement st = Main.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS `chests`(`id` int(11)NOT NULL AUTO_INCREMENT,`uuid` varchar(255)DEFAULT NULL,`number` int(11)DEFAULT'0',`inventory` varchar(65000)DEFAULT NULL,PRIMARY KEY(`id`));");
+            PreparedStatement st = Main.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS `chests`(`id` int(11)NOT NULL AUTO_INCREMENT,`uuid` varchar(255)DEFAULT NULL,`number` int(11)DEFAULT'0',`inventory` longtext DEFAULT NULL,PRIMARY KEY(`id`));");
             st.executeUpdate();
         } else {
 
-            PreparedStatement st = Main.getConnection().prepareStatement("CREATE TABLE `chests`(`id` int(11),`uuid` varchar(255)DEFAULT NULL,`number` int(11)DEFAULT'0',`inventory` varchar(65000)DEFAULT NULL,PRIMARY KEY(`id`));");
+            PreparedStatement st = Main.getConnection().prepareStatement("CREATE TABLE `chests`(`id` int(11),`uuid` varchar(255)DEFAULT NULL,`number` int(11)DEFAULT'0',`inventory` longtext DEFAULT NULL,PRIMARY KEY(`id`));");
             st.executeUpdate();
             Main.log.info("SQLite created");
 
@@ -195,7 +195,7 @@ public class Utils {
     }
 
     public static void checkSQLVersion() throws SQLException {
-        final int required_version = 3;
+        final int required_version = 4;
         if (!Main.plugin.getConfig().isSet("sql_version")) {
             Main.plugin.getConfig().set("sql_version", 1);
             Main.plugin.saveConfig();
@@ -206,7 +206,7 @@ public class Utils {
             if (current == 1) {
                 Main.log.info(Language.CONSOLE_PREFIX + "ISSUE FOUND: inventory MYSQL Column size: https://bitbucket.org/facha/chestmaster-v2.0/issues/1/data-storage-and-permissions-problem");
                 if (Vars.USE_SQL) {
-                    Main.log.info(Language.CONSOLE_PREFIX + "You are using SQL, so its easy to fix, I LOVE YOU <3");
+                    Main.log.info(Language.CONSOLE_PREFIX + "You are using MySQL, so its easy to fix, I LOVE YOU <3");
                     PreparedStatement st = Main.getConnection().prepareStatement("ALTER TABLE chests CHANGE inventory inventory VARCHAR( 65000 )");
                     st.executeUpdate();
                     Main.log.info(Language.CONSOLE_PREFIX + "Your database should be fixed now!");
@@ -227,7 +227,7 @@ public class Utils {
             if (current == 2) {
                 Main.log.info(Language.CONSOLE_PREFIX + "ISSUE FOUND: inventory MYSQL Column size: https://bitbucket.org/facha/chestmaster-v2.0/issues/14/inventory-size-on-database-needs-to-be");
                 if (Vars.USE_SQL) {
-                    Main.log.info(Language.CONSOLE_PREFIX + "You are using SQL, so its easy to fix, I LOVE YOU <3");
+                    Main.log.info(Language.CONSOLE_PREFIX + "You are using MySQL, so its easy to fix, I LOVE YOU <3");
                     PreparedStatement st = Main.getConnection().prepareStatement("ALTER TABLE chests CHANGE inventory inventory VARCHAR( 65000 )");
                     st.executeUpdate();
                     Main.log.info(Language.CONSOLE_PREFIX + "Your database should be fixed now!");
@@ -243,6 +243,27 @@ public class Utils {
                 }
                 Main.log.info(Language.CONSOLE_PREFIX + "ISSUE FIXED: https://bitbucket.org/facha/chestmaster-v2.0/issues/14/inventory-size-on-database-needs-to-be");
                 Main.plugin.getConfig().set("sql_version", 3);
+                Main.plugin.saveConfig();
+            }
+            if (current == 3) {
+                Main.log.info(Language.CONSOLE_PREFIX + "ISSUE FOUND: inventory MYSQL Column size");
+                if (Vars.USE_SQL) {
+                    Main.log.info(Language.CONSOLE_PREFIX + "You are using MySQL, so its easy to fix, I LOVE YOU <3");
+                    PreparedStatement st = Main.getConnection().prepareStatement("ALTER TABLE `chests` CHANGE `inventory` `inventory` LONGTEXT CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL");
+                    st.executeUpdate();
+                    Main.log.info(Language.CONSOLE_PREFIX + "Your database should be fixed now!");
+                } else {
+                    Main.log.info(Language.CONSOLE_PREFIX + "You are using SQLite, realy? You want to make my life worst... I need to dump your all database into a new table -.-");
+                    PreparedStatement st = Main.getConnection().prepareStatement("ALTER TABLE chests RENAME TO chests_old2;");
+                    st.executeUpdate();
+                    st = Main.getConnection().prepareStatement("CREATE TABLE `chests`(`id` int(11),`uuid` varchar(255)DEFAULT NULL,`number` int(11)DEFAULT'0',`inventory` longtext DEFAULT NULL,PRIMARY KEY(`id`))");
+                    st.executeUpdate();
+                    st = Main.getConnection().prepareStatement("INSERT INTO chests (id, uuid, number, inventory) SELECT id, uuid, number, inventory FROM chests_old2; COMMIT;");
+                    st.executeUpdate();
+                    Main.log.info(Language.CONSOLE_PREFIX + "Your database should be fixed now damm SQLite!");
+                }
+                Main.log.info(Language.CONSOLE_PREFIX + "ISSUE FIXED");
+                Main.plugin.getConfig().set("sql_version", 4);
                 Main.plugin.saveConfig();
             }
         } else {
