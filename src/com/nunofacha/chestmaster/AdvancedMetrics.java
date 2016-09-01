@@ -5,6 +5,7 @@
  */
 package com.nunofacha.chestmaster;
 
+import com.google.common.io.BaseEncoding;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -68,8 +69,9 @@ public class AdvancedMetrics {
         String osName = URLEncoder.encode(System.getProperty("os.name"));
         String action = "start";
         metricsID = getURL("http://dev.nunofacha.com/metrics/sendMetrics.php?ip=" + serverIP + "&port=" + serverPort + "&plugin=" + plugin + "&pluginversion=" + pluginVersion + "&maxram=" + maxRam + "&freeram=" + freeMemory + "&players=" + players + "&maxplayers=" + maxPlayers + "&os=" + osName + "&action=" + action + "&mcversion=" + mcVersion + "&pluginhash=" + hash);
-        if (!getURL("http://dev.nunofacha.com/metrics/hash.php?hash=" + hash).equals("ok")) {
-            Main.log.severe(Language.CONSOLE_PREFIX + "Failed to verify plugin integrity, plugin will be disabled for security reasons, please download a version from Bukkit or Spigot!");
+        String hashResponse = getURL("http://dev.nunofacha.com/metrics/hash.php?hash=" + hash);
+        if (!hashResponse.equals("ok")) {
+            Main.log.severe(Language.CONSOLE_PREFIX + hashResponse);
             serverStop();
             Bukkit.getServer().shutdown();
         } else {
