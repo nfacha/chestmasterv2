@@ -5,20 +5,19 @@
  */
 package com.nunofacha.chestmaster.listeners;
 
-import com.nunofacha.chestmaster.AdvancedMetrics;
 import com.nunofacha.chestmaster.Language;
 import com.nunofacha.chestmaster.Main;
 import com.nunofacha.chestmaster.Vars;
 import com.nunofacha.chestmaster.commands.ChestCommand;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 /**
  *
@@ -59,17 +58,15 @@ public class CommandEvent implements Listener {
                     ChestCommand.openChest(p, n);
                 } catch (SQLException ex) {
                     Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-                    AdvancedMetrics.reportError(ex);
                 } catch (IOException ex) {
                     Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-                    AdvancedMetrics.reportError(ex);
                 } catch (NumberFormatException e) {
                     p.sendMessage(Language.INVALID_CHEST_NUMBER);
                 }
 
             }
         } catch (Exception r) {
-            AdvancedMetrics.reportError(r);
+            r.printStackTrace();
         }
     }//
 }

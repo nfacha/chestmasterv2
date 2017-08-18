@@ -5,7 +5,6 @@
  */
 package com.nunofacha.chestmaster.listeners;
 
-import com.nunofacha.chestmaster.AdvancedMetrics;
 import com.nunofacha.chestmaster.Vars;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,7 +27,7 @@ public class MoveListener implements Listener {
                 Vars.activeChest.remove(p);
             }
         } catch (Exception r) {
-            AdvancedMetrics.reportError(r);
+            r.printStackTrace();
         }
 
     }

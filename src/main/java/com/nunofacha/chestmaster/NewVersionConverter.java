@@ -5,17 +5,19 @@
  */
 package com.nunofacha.chestmaster;
 
-import static com.nunofacha.chestmaster.Main.registerSQLitekeepAlive;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static com.nunofacha.chestmaster.Main.registerSQLitekeepAlive;
 
 /**
  *
@@ -75,7 +77,7 @@ public class NewVersionConverter {
             Main.log.info(Language.CONSOLE_PREFIX + "Migration Completed!");
 
         } catch (Exception r) {
-            AdvancedMetrics.reportError(r);
+            r.printStackTrace();
         }
 
     }

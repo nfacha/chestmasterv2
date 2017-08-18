@@ -5,7 +5,6 @@
  */
 package com.nunofacha.chestmaster.commands;
 
-import com.nunofacha.chestmaster.AdvancedMetrics;
 import com.nunofacha.chestmaster.Language;
 import com.nunofacha.chestmaster.Main;
 import com.nunofacha.chestmaster.Vars;
@@ -33,7 +32,6 @@ public class ChestDebugCommand implements CommandExecutor {
         message += "\nAuto Update: " + Vars.UPDATER;
         message += "\nMetrics: " + Vars.METRICS;
         message += "\nAdvanced Metrics: " + Vars.ADVANCED_METRICS;
-        message += "\nMetrics ID: " + AdvancedMetrics.metricsID;
         message += "\nError Reporting: " + Vars.REPORT_ERRORS;
         message += "\nServer Version: " + Main.plugin.getServer().getVersion();
         message += "\nOS: " + System.getProperty("os.name");

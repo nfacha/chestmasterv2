@@ -1,16 +1,16 @@
 package com.nunofacha.chestmaster.listeners;
 
-import com.nunofacha.chestmaster.AdvancedMetrics;
 import com.nunofacha.chestmaster.Main;
 import com.nunofacha.chestmaster.Utils;
 import com.nunofacha.chestmaster.Vars;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class InventoryListener implements Listener {
 
@@ -75,7 +75,7 @@ public class InventoryListener implements Listener {
                 }
             }
         } catch (Exception r) {
-            AdvancedMetrics.reportError(r);
+            r.printStackTrace();
         }
     }
 

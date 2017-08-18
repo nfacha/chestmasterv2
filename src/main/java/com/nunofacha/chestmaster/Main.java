@@ -2,11 +2,18 @@ package com.nunofacha.chestmaster;
 
 import com.nunofacha.chestmaster.commands.AdmChestCommand;
 import com.nunofacha.chestmaster.commands.ChestDebugCommand;
-import com.nunofacha.chestmaster.commands.ChestErrorCommand;
 import com.nunofacha.chestmaster.commands.ChestHashCommand;
 import com.nunofacha.chestmaster.listeners.CommandEvent;
 import com.nunofacha.chestmaster.listeners.InventoryListener;
 import com.nunofacha.chestmaster.listeners.MoveListener;
+import net.gravitydevelopment.updater.Updater;
+import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.mcstats.MetricsLite;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
@@ -15,14 +22,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import net.vexgames.chestmaster.Updater;
-import net.vexgames.chestmaster.Updater.UpdateResult;
-import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.mcstats.MetricsLite;
 
 /**
  *
@@ -33,7 +32,6 @@ public class Main extends JavaPlugin {
     public static Logger log = Bukkit.getLogger();
     public static Main plugin;
     public static Connection conn = null;
-    public static AdvancedMetrics advancedMetrics;
 
     public void onEnable() {
         plugin = this;
@@ -63,16 +61,6 @@ public class Main extends JavaPlugin {
                 Main.plugin.getConfig().set("command_name", "chest");
                 saveConfig();
                 log.info(Language.CONSOLE_PREFIX + "Added command_name key to config file as chest");
-            }
-            if (!Main.plugin.getConfig().isSet("networking.use_advanced_metrics")) {
-                Main.plugin.getConfig().set("networking.use_advanced_metrics", true);
-                saveConfig();
-                log.info(Language.CONSOLE_PREFIX + "Added networking.use_advanced_metrics key to config file as TRUE");
-            }
-            if (!Main.plugin.getConfig().isSet("networking.report_errors")) {
-                Main.plugin.getConfig().set("networking.report_errors", true);
-                saveConfig();
-                log.info(Language.CONSOLE_PREFIX + "Added networking.report_errors key to config file as TRUE");
             }
             if (!Main.plugin.getConfig().isSet("block_creative_access")) {
                 Main.plugin.getConfig().set("block_creative_access", false);
@@ -118,10 +106,9 @@ public class Main extends JavaPlugin {
         } catch (SQLException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
-        advancedMetrics.hash = ChestHashCommand.getPluginHash();
         if (Vars.UPDATER) {
             Updater updater = new Updater(this, 88582, this.getFile(), Updater.UpdateType.DEFAULT, false);
-            if (updater.getResult() == UpdateResult.UPDATE_AVAILABLE) {
+            if (updater.getResult() == Updater.UpdateResult.UPDATE_AVAILABLE) {
                 Vars.UPDATE_FOUND = true;
                 log.warning(Language.CONSOLE_PREFIX + "New update available, update at: http://dev.bukkit.org/bukkit-plugins/chestmaster/");
             } else {
@@ -143,16 +130,6 @@ public class Main extends JavaPlugin {
         } else {
             log.warning(Language.CONSOLE_PREFIX + "Metrics are disabled :(");
         }
-        if (Vars.ADVANCED_METRICS) {
-            advancedMetrics = new AdvancedMetrics();
-            advancedMetrics.serverStart();
-            log.info(Language.CONSOLE_PREFIX + "Sending start ping command to AdvancedMetrics!");
-            advancedMetrics.registerPinger();
-            log.info(Language.CONSOLE_PREFIX + "Registered pinger to AdvancedMetrics!");
-            log.info(Language.CONSOLE_PREFIX + "This server AdvancedMetrics ID is: " + advancedMetrics.metricsID);
-        } else {
-            log.warning(Language.CONSOLE_PREFIX + "AdvancedMetrics are disabled :(");
-        }
 
         Bukkit.getPluginManager().registerEvents(new InventoryListener(), this);
         if (!Vars.DISABLE_DUPE_KICK) {
@@ -162,15 +139,11 @@ public class Main extends JavaPlugin {
         }
         Bukkit.getPluginManager().registerEvents(new CommandEvent(), this);
         getCommand("chestdebug").setExecutor(new ChestDebugCommand());
-        getCommand("chesterror").setExecutor(new ChestErrorCommand());
         getCommand("chesthash").setExecutor(new ChestHashCommand());
     }
 
     public void onDisable() {
-        if (Vars.ADVANCED_METRICS) {
-            advancedMetrics.serverStop();
-            log.info(Language.CONSOLE_PREFIX + "Sending stop ping command to AdvancedMetrics!");
-        }
+
     }
 
     public static Connection getConnection() throws SQLException {
@@ -195,39 +168,6 @@ public class Main extends JavaPlugin {
                 sender.sendMessage("§6Config reloaded");
             }
         }
-//        if (command.getName().equalsIgnoreCase("chest")) {
-//            Player p = (Player) sender;
-//            int n = 1;
-//            
-//            try {
-//                if (args.length >= 1) {
-//                    n = Integer.valueOf(args[0]);
-//                }
-//                if (n < 0) {
-//                    p.sendMessage(Language.INVALID_CHEST_NUMBER);
-//                    return false;
-//                }
-//                if (n != 1) {
-//                    if (!p.hasPermission("chestmaster.multiple." + n)) {
-//                        p.sendMessage(Language.NO_PERMISSION_CHEST_NUMBER);
-//                        return false;
-//                    }
-//                } else {
-//                    if (!p.hasPermission("chestmaster.open")) {
-//                        p.sendMessage(Language.NO_PERMISSION);
-//                        return false;
-//                        
-//                    }
-//                }
-//                ChestCommand.openChest(p, n);
-//            } catch (SQLException ex) {
-//                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-//            } catch (IOException ex) {
-//                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-//            } catch (NumberFormatException e) {
-//                p.sendMessage(Language.INVALID_CHEST_NUMBER);
-//            }
-//        }
         if (command.getName().equals("admchest")) {
             Player p = (Player) sender;
             int n = 1;

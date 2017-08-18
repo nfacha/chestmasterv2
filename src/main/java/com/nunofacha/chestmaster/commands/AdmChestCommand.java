@@ -5,16 +5,16 @@
  */
 package com.nunofacha.chestmaster.commands;
 
-import com.nunofacha.chestmaster.AdvancedMetrics;
 import com.nunofacha.chestmaster.Language;
 import com.nunofacha.chestmaster.Main;
 import com.nunofacha.chestmaster.Utils;
 import com.nunofacha.chestmaster.Vars;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 /**
  *
@@ -49,7 +49,7 @@ public class AdmChestCommand {
                 p.sendMessage(Language.INVALID_CHEST_NUMBER);
             }
         } catch (Exception r) {
-            AdvancedMetrics.reportError(r);
+            r.printStackTrace();
         }
     }
 
