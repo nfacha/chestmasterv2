@@ -6,21 +6,17 @@
 package com.nunofacha.chestmaster.commands;
 
 import com.nunofacha.chestmaster.Main;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import org.apache.commons.codec.binary.Hex;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+
+import java.io.*;
 import java.net.URLDecoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.codec.binary.Hex;
-import org.apache.logging.log4j.core.config.plugins.ResolverUtil.Test;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 
 /**
  *
